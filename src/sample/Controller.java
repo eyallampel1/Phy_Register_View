@@ -1,7 +1,11 @@
 package sample;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 public class Controller {
@@ -46,10 +50,24 @@ public class Controller {
     @FXML
     TextField bin15 = new TextField();
 
+    @FXML
+    ChoiceBox<String> deviceSelect;
+@FXML
+    ListView<String> registerNames;
+
+
+
+
     hexToBin hextobin=new hexToBin();
     String fourBinString,oneHexChar;
 
     public void initialize(){
+        initComboBox();
+        initRegisterNames_listView();
+
+
+
+
         hex0.setText("0");
         hex1.setText("0");
         hex2.setText("0");
@@ -154,4 +172,34 @@ public class Controller {
                 break;
         }
     }
+
+    public void initComboBox(){
+        ObservableList list= FXCollections.observableArrayList();
+        String a="Black PHY";
+        String b="Black FPGA";
+
+        list.removeAll(list);
+        list.addAll(a,b);
+
+        deviceSelect.getItems().addAll(list);
+        deviceSelect.getSelectionModel().selectFirst();
+    }
+
+    public void initRegisterNames_listView(){
+        ObservableList list= FXCollections.observableArrayList();
+
+
+        //FPGA REGISTERS
+        String a="ID";
+        String b="ID2";
+        String c="DATE1";
+        String d="DATE2";
+        String e="D_VER";
+
+        list.removeAll(list);
+        list.addAll(a,b,c,d,e);
+        registerNames.getItems().addAll(list);
+
+    }
+
 }
