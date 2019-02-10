@@ -3,13 +3,14 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <TextField fx:id="hex3" layoutX="70.0" layoutY="32.0" onAction="#displayHex3ToBin_xxxx" onInputMethodTextChanged="#displayHex3ToBin_xxxx" onKeyPressed="#displayHex3ToBin_xxxx" onMouseClicked="#displayHex3ToBin_xxxx" onMouseEntered="#displayHex3ToBin_xxxx" onMouseExited="#displayHex3ToBin_xxxx" prefHeight="78.0" prefWidth="75.0" style="-fx-font-size: 40; -fx-alignment: CENTER;" />
       <TextField fx:id="hex2" layoutX="227.0" layoutY="32.0" onAction="#displayHex2ToBin_xxxx" onInputMethodTextChanged="#displayHex2ToBin_xxxx" onKeyPressed="#displayHex2ToBin_xxxx" onMouseClicked="#displayHex2ToBin_xxxx" onMouseEntered="#displayHex2ToBin_xxxx" onMouseExited="#displayHex2ToBin_xxxx" prefHeight="74.0" prefWidth="75.0" style="-fx-font-size: 40; -fx-alignment: CENTER;" />
@@ -113,7 +114,18 @@
             <Font name="System Bold" size="19.0" />
          </font>
       </Label>
-      <ChoiceBox fx:id="deviceSelect" layoutX="36.0" layoutY="215.0" prefWidth="150.0" />
-      <ListView fx:id="registerNames" layoutX="191.0" layoutY="177.0" prefHeight="311.0" prefWidth="194.0" />
+      <ChoiceBox fx:id="deviceSelect" layoutX="22.0" layoutY="214.0" prefWidth="150.0" />
+      <TableView fx:id="registerTable" layoutX="188.0" layoutY="177.0" onMouseClicked="#rowSelected" prefHeight="200.0" prefWidth="200.0">
+        <columns>
+          <TableColumn fx:id="registerNameColumn" prefWidth="136.0" text="Register Name" />
+          <TableColumn fx:id="offsetColumn" prefWidth="63.0" text="Offset" />
+        </columns>
+      </TableView>
+      <TextArea fx:id="registerDescription" layoutX="16.0" layoutY="409.0" prefHeight="78.0" prefWidth="372.0" promptText="Register Description" />
+      <Label layoutX="164.0" layoutY="384.0" text="Description" underline="true">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
    </children>
 </Pane>
