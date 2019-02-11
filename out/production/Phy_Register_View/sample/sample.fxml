@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <TextField fx:id="hex3" layoutX="70.0" layoutY="32.0" onAction="#displayHex3ToBin_xxxx" onInputMethodTextChanged="#displayHex3ToBin_xxxx" onKeyPressed="#displayHex3ToBin_xxxx" onMouseClicked="#displayHex3ToBin_xxxx" onMouseEntered="#displayHex3ToBin_xxxx" onMouseExited="#displayHex3ToBin_xxxx" prefHeight="78.0" prefWidth="75.0" style="-fx-font-size: 40; -fx-alignment: CENTER;" />
       <TextField fx:id="hex2" layoutX="227.0" layoutY="32.0" onAction="#displayHex2ToBin_xxxx" onInputMethodTextChanged="#displayHex2ToBin_xxxx" onKeyPressed="#displayHex2ToBin_xxxx" onMouseClicked="#displayHex2ToBin_xxxx" onMouseEntered="#displayHex2ToBin_xxxx" onMouseExited="#displayHex2ToBin_xxxx" prefHeight="74.0" prefWidth="75.0" style="-fx-font-size: 40; -fx-alignment: CENTER;" />
@@ -32,7 +32,7 @@
       <TextField fx:id="bin2" alignment="CENTER" layoutX="542.0" layoutY="136.0" onAction="#displaybin0ToHex0" onInputMethodTextChanged="#displaybin0ToHex0" onKeyPressed="#displaybin0ToHex0" onMouseClicked="#displaybin0ToHex0" prefHeight="25.0" prefWidth="33.0" style="-fx-font-size: 15; -fx-font-weight: bold;" />
       <TextField fx:id="bin1" alignment="CENTER" layoutX="577.0" layoutY="136.0" onAction="#displaybin0ToHex0" onInputMethodTextChanged="#displaybin0ToHex0" onKeyPressed="#displaybin0ToHex0" onMouseClicked="#displaybin0ToHex0" prefHeight="25.0" prefWidth="33.0" style="-fx-font-size: 15; -fx-font-weight: bold;" />
       <TextField fx:id="bin0" alignment="CENTER" layoutX="612.0" layoutY="136.0" onAction="#displaybin0ToHex0" onInputMethodTextChanged="#displaybin0ToHex0" onKeyPressed="#displaybin0ToHex0" onMouseClicked="#displaybin0ToHex0" prefHeight="25.0" prefWidth="33.0" style="-fx-font-size: 15; -fx-font-weight: bold;" />
-      <TextArea layoutX="393.0" layoutY="177.0" prefHeight="311.0" prefWidth="271.0" />
+      <TextArea fx:id="uartTerminal" layoutX="393.0" layoutY="177.0" prefHeight="311.0" prefWidth="271.0" />
       <Button layoutX="105.0" layoutY="314.0" mnemonicParsing="false" text="Button" />
       <Label layoutX="625.0" layoutY="112.0" text="0">
          <font>

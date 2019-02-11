@@ -6,6 +6,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
+
+import java.util.function.Consumer;
 
 public class Controller {
     @FXML
@@ -56,6 +62,9 @@ public class Controller {
     @FXML
     TableView<RegisterModel> registerTable;
 
+@FXML
+TextArea uartTerminal;
+
 
     @FXML
      TableColumn<RegisterModel, String> registerNameColumn;
@@ -65,7 +74,7 @@ public class Controller {
 @FXML
         TextArea registerDescription;
 
-
+SerialPort serialPort;
 
     hexToBin hextobin = new hexToBin();
     String fourBinString, oneHexChar;
@@ -102,6 +111,9 @@ public class Controller {
                 hex3.deselect();
             }
         });
+
+initUart();
+
     }
 
     public void displaybin0ToHex0() {
@@ -164,6 +176,31 @@ public class Controller {
                 bin15.setText("" + fourBinString.charAt(0));
 
                 break;
+        }
+    }
+
+    public void initUart(){
+        serialPort = new SerialPort("COM1");
+        try {
+            serialPort.openPort();
+
+            serialPort.setParams(SerialPort.BAUDRATE_9600,
+                    SerialPort.DATABITS_8,
+                    SerialPort.STOPBITS_1,
+                    SerialPort.PARITY_NONE);
+
+            serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN |
+                    SerialPort.FLOWCONTROL_RTSCTS_OUT);
+
+            serialPort.addEventListener(
+                    new PortReader(buffer -> Platform.runLater(() -> uartTerminal.setText(buffer))),
+                    SerialPort.MASK_RXCHAR);
+
+
+            serialPort.writeString("Hurrah!");
+        }
+        catch (SerialPortException ex) {
+            System.out.println("There are an error on writing string to port т: " + ex);
         }
     }
 
@@ -257,6 +294,29 @@ public class Controller {
 
 
     }
+
+
+    private class PortReader implements SerialPortEventListener {
+        private final Consumer<String> textHandler;
+
+        PortReader(Consumer<String> textHandler) {
+            this.textHandler = textHandler;
+        }
+
+        @Override
+        public void serialEvent(SerialPortEvent event) {
+            if (event.isRXCHAR()) {
+                try {
+                    String buffer = serialPort.readString();
+                    textHandler.accept(buffer);
+                } catch (SerialPortException ex) {
+                    System.out.println(ex);
+                }
+            }
+        }
+    }
+
+
 
 
 
