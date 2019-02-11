@@ -61,6 +61,11 @@ public class Controller {
     ListView<String> registerNames;
     @FXML
     TableView<RegisterModel> registerTable;
+@FXML
+TextField userWantsToSendThis;
+@FXML
+Button SendToTerminalBTN;
+
 
 @FXML
 TextArea uartTerminal;
@@ -114,6 +119,11 @@ SerialPort serialPort;
 
 initUart();
 
+    }
+
+    public void sendToTerminalBtnPressed() throws SerialPortException {
+        writeToUartTerminal(userWantsToSendThis.getText()+"\n");
+serialPort.writeString(userWantsToSendThis.getText()+"\n");
     }
 
     public void displaybin0ToHex0() {
@@ -180,11 +190,11 @@ initUart();
     }
 
     public void initUart(){
-        serialPort = new SerialPort("COM1");
+        serialPort = new SerialPort("COM3");
         try {
             serialPort.openPort();
 
-            serialPort.setParams(SerialPort.BAUDRATE_9600,
+            serialPort.setParams(SerialPort.BAUDRATE_115200,
                     SerialPort.DATABITS_8,
                     SerialPort.STOPBITS_1,
                     SerialPort.PARITY_NONE);
@@ -193,16 +203,35 @@ initUart();
                     SerialPort.FLOWCONTROL_RTSCTS_OUT);
 
             serialPort.addEventListener(
-                    new PortReader(buffer -> Platform.runLater(() -> uartTerminal.setText(buffer))),
+                    new PortReader(buffer -> Platform.runLater(() ->
+                            writeToUartTerminal(buffer)
+                    )),
                     SerialPort.MASK_RXCHAR);
 
-
+            writeToUartTerminal("Hurrah!");
             serialPort.writeString("Hurrah!");
         }
         catch (SerialPortException ex) {
             System.out.println("There are an error on writing string to port т: " + ex);
         }
     }
+
+
+
+    public void writeToUartTerminal(String buffer){
+
+        if (buffer!=null) {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    uartTerminal.appendText(buffer);
+                }
+            });
+
+        }
+
+        }
+
 
     public void displayBinToHex(String whichBinNibbel) {
         switch (whichBinNibbel) {
