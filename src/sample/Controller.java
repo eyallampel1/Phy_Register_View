@@ -1,12 +1,11 @@
 package sample;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -745,6 +744,15 @@ public void set10Mbps_btn_pressed() throws SerialPortException, InterruptedExcep
         serialPort.writeString("spi_util 0x00440000\n");
         Thread.sleep(100);
         phyindexInteger=1;
+    }
+
+    public void choiceBoxPressed(){
+        //RegisterModel selectedRegister = registerTable.getSelectionModel().getSelectedItem();
+        //System.out.println(selectedRegister.getRegisterName());
+
+        String selectedDevice=deviceSelect.getSelectionModel().getSelectedItem();
+        System.out.println(selectedDevice);
+
     }
 
 }
