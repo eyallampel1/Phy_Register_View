@@ -1,6 +1,8 @@
 package sample;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -373,6 +375,23 @@ if(mode==2){
 
         deviceSelect.getItems().addAll(list);
         deviceSelect.getSelectionModel().selectFirst();
+
+        deviceSelect.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+                System.out.println(deviceSelect.getItems().get((Integer) number2));
+                ///choice box has changed!!!
+                if(deviceSelect.getItems().get((Integer) number2).equals("Black PHY")) {
+                    initRegisterNames_Phy_TableView();
+                }
+                   else if(deviceSelect.getItems().get((Integer) number2).equals("Black FPGA"))   {
+                    initRegisterNames_TableView();
+                    }
+                }
+
+        });
+
+
     }
 
     public void initRegisterNames_listView() {
@@ -391,6 +410,17 @@ if(mode==2){
         registerNames.getItems().addAll(list);
         // registerTable.getItems().addAll(list);
 
+    }
+
+    public void initRegisterNames_Phy_TableView() {
+        registerNameColumn.setCellValueFactory(new PropertyValueFactory<>("registerName"));
+        offsetColumn.setCellValueFactory(new PropertyValueFactory<>("offsetValue"));
+        RegisterModel register=new RegisterModel("Copper Control","0x00");
+        RegisterModel register2=new RegisterModel("Copper Status","0x01");
+        RegisterModel register3=new RegisterModel("Phy Identifier 1","0x02");
+        RegisterModel register4=new RegisterModel("Phy Identifier 2","0x03");
+        registerTable.getItems().clear();
+        registerTable.getItems().addAll(register,register2,register3,register4);
     }
 
 
@@ -413,7 +443,7 @@ if(mode==2){
         RegisterModel register12=new RegisterModel("ETC_data_wr","0x16");
         RegisterModel register13=new RegisterModel("ETC_exe","0x18");
         RegisterModel register14=new RegisterModel("ETC_status","0x1a");
-
+        registerTable.getItems().clear();
         registerTable.getItems().addAll(register,register2,register3,register4,register5,register6,register7,register8,register9,register10,register11,register12,register13,register14);
 
     }
@@ -424,6 +454,22 @@ if(mode==2){
 
         RegisterModel selectedRegister = registerTable.getSelectionModel().getSelectedItem();
         System.out.println(selectedRegister.getRegisterName());
+
+
+        if(selectedRegister.getRegisterName().equals("Copper Control")) {
+            registerDescription.setText("Bit(15):Copper Reset\n"+
+                                        "Bit(14):Loopback\n"+
+                                        "Bit(13):Speed Select (LSB)\n"+
+                                        "Bit(12):Auto negotiation Enable\n"+
+                                        "Bit(11):Power Down\n"+
+                                        "Bit(10):Isolate\n"+
+                                        "Bit(9) :Restart Copper Auto negotiation\n"+
+                                        "Bit(8) :Copper Duplex Mode\n"+
+                                        "Bit(7) :Collision Test\n"+
+                                        "Bit(6):Speed Select (MSB)\n"+
+                                        "Bits(5:0):Reserved\n");
+
+        }
 
         if(selectedRegister.getRegisterName().equals("id")){
             writeToUartTerminal("spi_util 0x00000000\n",1);

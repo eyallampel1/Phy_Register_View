@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="587.0" prefWidth="1083.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="587.0" prefWidth="1083.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
     <children>
         <TextField fx:id="hex3" layoutX="70.0" layoutY="32.0" onAction="#displayHex3ToBin_xxxx" onInputMethodTextChanged="#displayHex3ToBin_xxxx" onKeyPressed="#displayHex3ToBin_xxxx" onMouseClicked="#displayHex3ToBin_xxxx" onMouseEntered="#displayHex3ToBin_xxxx" onMouseExited="#displayHex3ToBin_xxxx" prefHeight="78.0" prefWidth="75.0" style="-fx-font-size: 40; -fx-alignment: CENTER;" />
         <TextField fx:id="hex2" layoutX="227.0" layoutY="32.0" onAction="#displayHex2ToBin_xxxx" onInputMethodTextChanged="#displayHex2ToBin_xxxx" onKeyPressed="#displayHex2ToBin_xxxx" onMouseClicked="#displayHex2ToBin_xxxx" onMouseEntered="#displayHex2ToBin_xxxx" onMouseExited="#displayHex2ToBin_xxxx" prefHeight="74.0" prefWidth="75.0" style="-fx-font-size: 40; -fx-alignment: CENTER;" />
@@ -114,7 +114,7 @@
                 <Font name="System Bold" size="19.0" />
             </font>
         </Label>
-        <ChoiceBox fx:id="deviceSelect" layoutX="22.0" layoutY="214.0" onMouseClicked="#choiceBoxPressed" onMouseEntered="#choiceBoxPressed" onMouseExited="#choiceBoxPressed" prefWidth="150.0" />
+        <ChoiceBox fx:id="deviceSelect" layoutX="22.0" layoutY="214.0" prefWidth="150.0" />
         <TableView fx:id="registerTable" layoutX="188.0" layoutY="177.0" onMouseClicked="#rowSelected" prefHeight="200.0" prefWidth="200.0">
             <columns>
                 <TableColumn fx:id="registerNameColumn" prefWidth="136.0" text="Register Name" />
