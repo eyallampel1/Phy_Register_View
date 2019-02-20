@@ -1,7 +1,7 @@
 package sample;
 
 public class hexToBin {
-   private String hexNumber;
+    private String hexNumber;
     private String binNumber;
 
 //   public hexToBin(String hexNumber) {
@@ -18,60 +18,60 @@ public class hexToBin {
 
     public String convertHexToBin(String hexNibble){
 
-       switch (hexNibble){
-           case "0":
-               this.binNumber="0000";
-               break;
-           case "1":
-               this.binNumber="0001";
-               break;
-           case "2":
-               this.binNumber="0010";
-               break;
-           case "3":
-               this.binNumber="0011";
-               break;
-           case "4":
-               this.binNumber="0100";
-               break;
-           case "5":
-               this.binNumber="0101";
-               break;
-           case "6":
-               this.binNumber="0110";
-               break;
-           case "7":
-               this.binNumber="0111";
-               break;
-           case "8":
-               this.binNumber="1000";
-               break;
-           case "9":
-               this.binNumber="1001";
-               break;
-           case "a":
-               this.binNumber="1010";
-               break;
-           case "b":
-               this.binNumber="1011";
-               break;
-           case "c":
-               this.binNumber="1100";
-               break;
-           case "d":
-               this.binNumber="1101";
-               break;
-           case "e":
-               this.binNumber="1110";
-               break;
-           case "f":
-               this.binNumber="1111";
-               break;
-           default:
-               binNumber="0000";
-               break;
-       }
-       return  binNumber;
+        switch (hexNibble){
+            case "0":
+                this.binNumber="0000";
+                break;
+            case "1":
+                this.binNumber="0001";
+                break;
+            case "2":
+                this.binNumber="0010";
+                break;
+            case "3":
+                this.binNumber="0011";
+                break;
+            case "4":
+                this.binNumber="0100";
+                break;
+            case "5":
+                this.binNumber="0101";
+                break;
+            case "6":
+                this.binNumber="0110";
+                break;
+            case "7":
+                this.binNumber="0111";
+                break;
+            case "8":
+                this.binNumber="1000";
+                break;
+            case "9":
+                this.binNumber="1001";
+                break;
+            case "a":
+                this.binNumber="1010";
+                break;
+            case "b":
+                this.binNumber="1011";
+                break;
+            case "c":
+                this.binNumber="1100";
+                break;
+            case "d":
+                this.binNumber="1101";
+                break;
+            case "e":
+                this.binNumber="1110";
+                break;
+            case "f":
+                this.binNumber="1111";
+                break;
+            default:
+                binNumber="0000";
+                break;
+        }
+        return  binNumber;
     }
 
     public String convertBinToHex(String binString) {

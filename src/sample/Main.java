@@ -11,8 +11,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Lampel Phy Register Viewer");
-        primaryStage.setScene(new Scene(root, 700, 500));
+        primaryStage.setTitle("Lampel IOMG ATP");
+        primaryStage.setScene(new Scene(root, 1083, 587));
         primaryStage.show();
     }
 
