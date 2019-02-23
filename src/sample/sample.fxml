@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="587.0" prefWidth="1083.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="587.0" prefWidth="1083.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
     <children>
         <TextField fx:id="hex3" layoutX="70.0" layoutY="32.0" onAction="#displayHex3ToBin_xxxx" onInputMethodTextChanged="#displayHex3ToBin_xxxx" onKeyPressed="#displayHex3ToBin_xxxx" onMouseClicked="#displayHex3ToBin_xxxx" onMouseEntered="#displayHex3ToBin_xxxx" onMouseExited="#displayHex3ToBin_xxxx" prefHeight="78.0" prefWidth="75.0" style="-fx-font-size: 40; -fx-alignment: CENTER;" />
         <TextField fx:id="hex2" layoutX="227.0" layoutY="32.0" onAction="#displayHex2ToBin_xxxx" onInputMethodTextChanged="#displayHex2ToBin_xxxx" onKeyPressed="#displayHex2ToBin_xxxx" onMouseClicked="#displayHex2ToBin_xxxx" onMouseEntered="#displayHex2ToBin_xxxx" onMouseExited="#displayHex2ToBin_xxxx" prefHeight="74.0" prefWidth="75.0" style="-fx-font-size: 40; -fx-alignment: CENTER;" />
@@ -161,5 +161,6 @@
       <Button fx:id="phySetSpeed10" layoutX="772.0" layoutY="397.0" mnemonicParsing="false" onAction="#set10Mbps_btn_pressed" text="10Mbps" />
       <Button fx:id="phySetSpeed100" layoutX="838.0" layoutY="397.0" mnemonicParsing="false" onAction="#set100Mbps_btn_pressed" text="100Mbps" />
       <Button fx:id="phySetSpeed1000" layoutX="912.0" layoutY="397.0" mnemonicParsing="false" onAction="#set1000Mbps_btn_pressed" text="1000Mbps" />
+      <Button fx:id="writeToSensorBtn" layoutX="664.0" layoutY="75.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="108.0" text="Write To Sensor" />
     </children>
 </Pane>

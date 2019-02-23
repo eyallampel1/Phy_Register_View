@@ -457,6 +457,7 @@ if(mode==2){
 
 
         if(selectedRegister.getRegisterName().equals("Copper Control")) {
+            moveToPhyPage(1,0);
             registerDescription.setText("Bit(15):Copper Reset\n"+
                                         "Bit(14):Loopback\n"+
                                         "Bit(13):Speed Select (LSB)\n"+
@@ -799,6 +800,26 @@ public void set10Mbps_btn_pressed() throws SerialPortException, InterruptedExcep
         String selectedDevice=deviceSelect.getSelectionModel().getSelectedItem();
         System.out.println(selectedDevice);
 
+    }
+
+    public void moveToPhyPage(int portNumber,int pageNumber) throws InterruptedException, SerialPortException {
+        Thread.sleep(100);
+        //move to user wanted page:
+        writeToUartTerminal("spi_util 0x80400"+portNumber+"16\n",1);
+        serialPort.writeString("spi_util 0x80400"+portNumber+"16\n");
+        Thread.sleep(100);
+        writeToUartTerminal("spi_util 0x80420000\n",1);
+        serialPort.writeString("spi_util 0x80420000\n");
+        Thread.sleep(100);
+        writeToUartTerminal("spi_util 0x8046000"+pageNumber+ "\n",1);
+        serialPort.writeString("spi_util 0x8046000"+pageNumber+ "\n");
+        Thread.sleep(100);
+        writeToUartTerminal("spi_util 0x80480001\n",1);
+        serialPort.writeString("spi_util 0x80480001\n");
+        Thread.sleep(100);
+        writeToUartTerminal("spi_util 0x004a0000\n",1);
+        serialPort.writeString("spi_util 0x004a0000\n");
+        Thread.sleep(100);
     }
 
 }
