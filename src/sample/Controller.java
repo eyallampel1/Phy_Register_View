@@ -73,7 +73,7 @@ public class Controller {
 
 
     @FXML
-    TextArea uartTerminal;
+    TextArea uartTerminal,GPPTerminal,cryptoTerminal;
 
 
     @FXML

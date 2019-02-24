@@ -12,8 +12,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Lampel IOMG ATP");
-        primaryStage.setScene(new Scene(root, 1083, 587));
+        primaryStage.setScene(new Scene(root, 1279, 587));
         primaryStage.show();
+        //
     }
 
 
