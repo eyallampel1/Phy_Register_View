@@ -414,8 +414,24 @@ if(mode==2){
                 else if(deviceSelect.getItems().get((Integer) number2).equals("Black FAN access and control"))   {
                     initRegisterNames_Black_FAN();
                 }
-
-
+                else if(deviceSelect.getItems().get((Integer) number2).equals("Black Interrupt Controller Interface"))   {
+                    initRegisterNames_Interrupt();
+                }
+                else if(deviceSelect.getItems().get((Integer) number2).equals("Black Discretes Control"))   {
+                    initRegisterNames_Discretes_Control();
+                }
+                else if(deviceSelect.getItems().get((Integer) number2).equals("Black Test-Point MUX Select"))   {
+                    initRegisterNames_Black_tp_mux();
+                }
+                else if(deviceSelect.getItems().get((Integer) number2).equals("Black Sofware Reset"))   {
+                    initRegisterNames_Black_Software_Reset();
+                }
+                else if(deviceSelect.getItems().get((Integer) number2).equals("Black Blanks"))   {
+                    initRegisterNames_Black_blanks();
+                }
+                else if(deviceSelect.getItems().get((Integer) number2).equals("Black Discretes Status"))   {
+                    initRegisterNames_Black_discreat_status();
+                }
 
 
                 }
@@ -443,6 +459,67 @@ if(mode==2){
 
     }
 
+    public void initRegisterNames_Black_discreat_status() {
+        registerNameColumn.setCellValueFactory(new PropertyValueFactory<>("registerName"));
+        offsetColumn.setCellValueFactory(new PropertyValueFactory<>("offsetValue"));
+        RegisterModel register=new RegisterModel("FPGA_IO_B_GPI","0xc4");
+        RegisterModel register2=new RegisterModel("FPGA_EDSP_GPI","0xca");
+        RegisterModel register3=new RegisterModel("FPGA_EXT_FEA_RST_EDSP","0xcc");
+        registerTable.getItems().clear();
+        registerTable.getItems().addAll(register,register2,register3);
+    }
+
+    public void initRegisterNames_Black_blanks() {
+        registerNameColumn.setCellValueFactory(new PropertyValueFactory<>("registerName"));
+        offsetColumn.setCellValueFactory(new PropertyValueFactory<>("offsetValue"));
+        RegisterModel register=new RegisterModel("Blank_Emul_En","0xba");
+        RegisterModel register2=new RegisterModel("Blank_Rd_Val","0xbc");
+        RegisterModel register3=new RegisterModel("Blank_Emul_Drv_Val","0xbe");
+        registerTable.getItems().clear();
+        registerTable.getItems().addAll(register,register2,register3);
+    }
+
+
+    public void initRegisterNames_Black_Software_Reset() {
+        registerNameColumn.setCellValueFactory(new PropertyValueFactory<>("registerName"));
+        offsetColumn.setCellValueFactory(new PropertyValueFactory<>("offsetValue"));
+        RegisterModel register=new RegisterModel("SOFT_RESET","0xb8");
+        registerTable.getItems().clear();
+        registerTable.getItems().addAll(register);
+    }
+
+    public void initRegisterNames_Black_tp_mux() {
+        registerNameColumn.setCellValueFactory(new PropertyValueFactory<>("registerName"));
+        offsetColumn.setCellValueFactory(new PropertyValueFactory<>("offsetValue"));
+        RegisterModel register=new RegisterModel("tp_sel","0xb6");
+        registerTable.getItems().clear();
+        registerTable.getItems().addAll(register);
+    }
+
+
+    public void initRegisterNames_Discretes_Control() {
+        registerNameColumn.setCellValueFactory(new PropertyValueFactory<>("registerName"));
+        offsetColumn.setCellValueFactory(new PropertyValueFactory<>("offsetValue"));
+        RegisterModel register=new RegisterModel("GPOUT_Ctrl","0xb4");
+        registerTable.getItems().clear();
+        registerTable.getItems().addAll(register);
+    }
+
+
+    public void initRegisterNames_Interrupt() {
+        registerNameColumn.setCellValueFactory(new PropertyValueFactory<>("registerName"));
+        offsetColumn.setCellValueFactory(new PropertyValueFactory<>("offsetValue"));
+        RegisterModel register=new RegisterModel("Interrupt Enable","0x80");
+        RegisterModel register2=new RegisterModel("Interrupt Mask","0x82");
+        RegisterModel register3=new RegisterModel("Interrupt Cause","0x84");
+        RegisterModel register4=new RegisterModel("Interrupt Stimulus Generation","0x88");
+
+
+        registerTable.getItems().clear();
+        registerTable.getItems().addAll(register,register2,register3,register4);
+    }
+
+
     public void initRegisterNames_Black_FAN() {
         registerNameColumn.setCellValueFactory(new PropertyValueFactory<>("registerName"));
         offsetColumn.setCellValueFactory(new PropertyValueFactory<>("offsetValue"));
@@ -454,7 +531,7 @@ if(mode==2){
 
 
         registerTable.getItems().clear();
-        registerTable.getItems().addAll(register,register2,register3,register4);
+        registerTable.getItems().addAll(register,register2,register3,register4,register5);
     }
 
     public void initRegisterNames_Black_ETC(){
@@ -557,6 +634,145 @@ if(mode==2){
 
         RegisterModel selectedRegister = registerTable.getSelectionModel().getSelectedItem();
         System.out.println(selectedRegister.getRegisterName());
+
+        //black Discreted status
+        if(selectedRegister.getRegisterName().equals("FPGA_IO_B_GPI")) {
+            registerDescription.setText("This register reflects the value of FPGA_IO_B_GPI.\n" +
+                    "Bits(15:2): Reserved\n" +
+                    "Bits(1:0): FPGA_IO_B_GPI\n");
+        }
+        if(selectedRegister.getRegisterName().equals("FPGA_EDSP_GPI")) {
+            registerDescription.setText("This register reflects the value of FPGA_EDSP_GPI.\n" +
+                    "Bits(15:2): Reserved\n" +
+                    "Bits(1:0): FPGA_EDSP_GPI\n");
+        }
+        if(selectedRegister.getRegisterName().equals("FPGA_EXT_FEA_RST_EDSP")) {
+            registerDescription.setText("This register reflects the value of FPGA_EXT_FEA_RST_EDSP.\n" +
+                    "Bits(15:2): Reserved\n" +
+                    "Bits(1:0): FPGA_EXT_FEA_RST_EDSP\n");
+        }
+        //black Discreted status
+
+        //black blanks
+        if(selectedRegister.getRegisterName().equals("Blank_Emul_En")) {
+            registerDescription.setText("Emulation enable for Blank signals\n" +
+                    "Bits(15:2): Reserved\n" +
+                    "Bits(1:0):\n" +
+                    "   \"00\"= Normal operation\n" +
+                    "   \"01\"= Emulation enable\n" +
+                    "   \"10\"= Drive GNDs\n" +
+                    "   \"11\"= Drive VCCs\n");
+        }
+
+        if(selectedRegister.getRegisterName().equals("Blank_Rd_Val")) {
+            registerDescription.setText("Blank Output MUX Value Reflection\n" +
+                    "Bits(15:8): Reserved\n" +
+                    "Bits(7:0): Reflects the Blank Output MUX Value\n" +
+                    "Note : the value of lower 2-bits of the MUX are outputted to\n \"FPGA_DSP_IOMG_FGPO\"\n");
+        }
+
+        if(selectedRegister.getRegisterName().equals("Blank_Emul_Drv_Val")) {
+            registerDescription.setText("User defined data for emulation\n" +
+                    "Bits(15:8): Reserved\n" +
+                    "Bits(7:0): Data for blanks emulation. \n\tR/W\tBlank_Emul_Drv_Val\t 0xbe\n");
+        }
+        //black blanks
+
+        //black soft reset
+        if(selectedRegister.getRegisterName().equals("SOFT_RESET")) {
+            registerDescription.setText("TBD");
+        }
+        //black soft reset
+
+
+        //black test point MUX
+        if(selectedRegister.getRegisterName().equals("tp_sel")) {
+            registerDescription.setText("TBD");
+        }
+        //black test point MUX
+
+        //black gpout cntrl
+        if(selectedRegister.getRegisterName().equals("GPOUT_Ctrl")) {
+            registerDescription.setText("GPOUT Control Register\n" +
+                    "Bits(15:2): Reserved\n" +
+                    "Bits(1:0):  FPGA_IO_B_GPO (1:0)\n");
+        }
+        //black gpout cntrl
+
+
+        //BLACK INTERRUPT
+        if(selectedRegister.getRegisterName().equals("Interrupt Enable")) {
+            registerDescription.setText("Interrupt Enable \n" +
+                    "Bits (15:1): Reserved\n" +
+                    "Bit(0): Interrupt Enable: '1' – The interrupt is enabled.\n" +
+                    "                                      '0' – The interrupt is disabled.  \n");
+        }
+
+        if(selectedRegister.getRegisterName().equals("Interrupt Mask")) {
+            registerDescription.setText("Interrupt Mask Register.\n Per bit masking the interrupt generation.\n The bit map is like as in the \"Interrupt Cause Register\n\" (see below).\n  Writing '1' to a particular bit will disable (masking)\n the interrupt generation\n caused from this bit. At reset (default) \nall interrupt causes are masked [0xFFFF].  \n" +
+                    "Note: Masking a bit will disable the interrupt generation\n but not disable the bit report of \nerror/problem/fail-status or clear the bit in the\n \"Interrupt Cause Register\" , \nthis  enables the work in poling mode. \n");
+        }
+
+        if(selectedRegister.getRegisterName().equals("Interrupt Cause")) {
+            registerDescription.setText("Interrupt Cause Register.\n" +
+                    "Bits (15:3): Reserved\n" +
+                    "Bit(2): Intterupt Stimulus ('1' – On , '0' – Off)\n" +
+                    "Bit(1): 1PPS Failure ('1' – Fail , '0' – O.K.)\n" +
+                    "Bit(0): Fan Rotating Failure ('1' – Failure, '0' – O.K.)\n" +
+                    "Note: Write  '0' to particular bit to clear the bit.\n");
+        }
+
+        if(selectedRegister.getRegisterName().equals("Interrupt Stimulus Generation")) {
+            registerDescription.setText("Interrupt Stimulus Generation Register. \n" +
+                    "Bits (15:1): Reserved\n" +
+                    "Bit(0): Interrupt Generation: '1' – Generate stimulus interrupt.\n" +
+                    "                                            '0' – Null.  \n");
+        }
+
+        //BLACK INTERRUPT
+
+
+        //Black Fan
+        if(selectedRegister.getRegisterName().equals("Fan_Spd_Ctrl")) {
+
+            registerDescription.setText("Fan Speed Control Register\n" +
+                    "Bits (15:3): Reserved\n" +
+                    "Bit(2:0) : Fan Speed Setting\n" +
+                    " \"000\" – Very Low Speed (TBD RPM)\n" +
+                    " \"001\" – Low Speed (TBD RPM)\n" +
+                    " \"010\" – Medium-Low Speed (TBD RPM)\n" +
+                    " \"011\" – Medium Speed (TBD RPM)\n" +
+                    " \"100\" – Medium-High Speed (TBD RPM)\n" +
+                    " \"101\" – High Speed (TBD RPM)\n" +
+                    " \"110\" – Very High Speed (TBD RPM)\n" +
+                    " \"111\" – Fan is Off (0 RPM)\n");
+        }
+        if(selectedRegister.getRegisterName().equals("Fan_min_bndry")) {
+            registerDescription.setText("Fan  Minimum Boundary Alowable in RPM\nR/W");
+        }
+        if(selectedRegister.getRegisterName().equals("Fan_Speed")) {
+            registerDescription.setText("Fan Rotating Speed in RPM \n Read Only");
+        }
+        if(selectedRegister.getRegisterName().equals("Fan_spd_chken")) {
+            registerDescription.setText("Fan Speed Check Enable\n" +
+                    "Bits (15:1): Reserved\n" +
+                    "Bit(0) : Fan Speed  Check Enable (Active High) \n R/W");
+        }
+
+        if(selectedRegister.getRegisterName().equals("Fan_Status")) {
+            registerDescription.setText("Fan Speed Status\n" +
+                    "Bits (15:1): Reserved\n" +
+                    "Bit(0): The Fan speed is less then the Minimum Boundry\n" +
+                    "Writing '0' to bit # 0 in this register or writing '0' to bit # 0 in the \"Interrupt Cause Register\" (0x84) clear the bit.\n");
+        }
+
+        if(selectedRegister.getRegisterName().equals("Fan_Status")) {
+            registerDescription.setText("Fan Speed Status\n" +
+                    "Bits (15:1): Reserved\n" +
+                    "Bit(0): The Fan speed is less then the Minimum Boundry\n" +
+                    "Writing '0' to bit # 0 in this register or writing '0' to bit # 0\n in the \"Interrupt Cause Register\" (0x84) clear the bit.\n\n R/W");
+        }
+        //Black Fan
 
         //BLACK temperature sensor
         if(selectedRegister.getRegisterName().equals("Temperature register")) {
