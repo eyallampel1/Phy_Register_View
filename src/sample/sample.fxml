@@ -3,14 +3,19 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="587.0" prefWidth="1083.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="587.0" prefWidth="1279.0" xmlns="http://javafx.com/javafx/8.0.112-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
     <children>
         <TextField fx:id="hex3" layoutX="70.0" layoutY="32.0" onAction="#displayHex3ToBin_xxxx" onInputMethodTextChanged="#displayHex3ToBin_xxxx" onKeyPressed="#displayHex3ToBin_xxxx" onMouseClicked="#displayHex3ToBin_xxxx" onMouseEntered="#displayHex3ToBin_xxxx" onMouseExited="#displayHex3ToBin_xxxx" prefHeight="78.0" prefWidth="75.0" style="-fx-font-size: 40; -fx-alignment: CENTER;" />
         <TextField fx:id="hex2" layoutX="227.0" layoutY="32.0" onAction="#displayHex2ToBin_xxxx" onInputMethodTextChanged="#displayHex2ToBin_xxxx" onKeyPressed="#displayHex2ToBin_xxxx" onMouseClicked="#displayHex2ToBin_xxxx" onMouseEntered="#displayHex2ToBin_xxxx" onMouseExited="#displayHex2ToBin_xxxx" prefHeight="74.0" prefWidth="75.0" style="-fx-font-size: 40; -fx-alignment: CENTER;" />
@@ -32,7 +37,6 @@
         <TextField fx:id="bin2" alignment="CENTER" layoutX="542.0" layoutY="136.0" onAction="#displaybin0ToHex0" onInputMethodTextChanged="#displaybin0ToHex0" onKeyPressed="#displaybin0ToHex0" onMouseClicked="#displaybin0ToHex0" prefHeight="25.0" prefWidth="33.0" style="-fx-font-size: 15; -fx-font-weight: bold;" />
         <TextField fx:id="bin1" alignment="CENTER" layoutX="577.0" layoutY="136.0" onAction="#displaybin0ToHex0" onInputMethodTextChanged="#displaybin0ToHex0" onKeyPressed="#displaybin0ToHex0" onMouseClicked="#displaybin0ToHex0" prefHeight="25.0" prefWidth="33.0" style="-fx-font-size: 15; -fx-font-weight: bold;" />
         <TextField fx:id="bin0" alignment="CENTER" layoutX="612.0" layoutY="136.0" onAction="#displaybin0ToHex0" onInputMethodTextChanged="#displaybin0ToHex0" onKeyPressed="#displaybin0ToHex0" onMouseClicked="#displaybin0ToHex0" prefHeight="25.0" prefWidth="33.0" style="-fx-font-size: 15; -fx-font-weight: bold;" />
-        <TextArea fx:id="uartTerminal" layoutX="393.0" layoutY="177.0" prefHeight="396.0" prefWidth="372.0" />
         <Button fx:id="SendToTerminalBTN" layoutX="32.0" layoutY="352.0" mnemonicParsing="false" onAction="#sendToTerminalBtnPressed" text="Send To Terminal" />
         <Label layoutX="625.0" layoutY="112.0" text="0">
             <font>
@@ -114,7 +118,7 @@
                 <Font name="System Bold" size="19.0" />
             </font>
         </Label>
-        <ChoiceBox fx:id="deviceSelect" layoutX="22.0" layoutY="214.0" onMouseClicked="#choiceBoxPressed" onMouseExited="#choiceBoxPressed" prefWidth="150.0" />
+        <ChoiceBox fx:id="deviceSelect" layoutX="22.0" layoutY="214.0" prefWidth="150.0" />
         <TableView fx:id="registerTable" layoutX="188.0" layoutY="177.0" onMouseClicked="#rowSelected" prefHeight="200.0" prefWidth="200.0">
             <columns>
                 <TableColumn fx:id="registerNameColumn" prefWidth="136.0" text="Register Name" />
@@ -133,7 +137,7 @@
             <Font name="System Bold" size="22.0" />
          </font>
       </Label>
-      <TextField fx:id="phyPort" layoutX="875.0" layoutY="208.0" prefHeight="25.0" prefWidth="44.0" text="0" />
+      <TextField fx:id="phyPort" layoutX="875.0" layoutY="208.0" prefHeight="25.0" prefWidth="44.0" text="00" />
       <Label layoutX="771.0" layoutY="207.0" text="Phy Port:">
          <font>
             <Font size="17.0" />
@@ -161,5 +165,175 @@
       <Button fx:id="phySetSpeed10" layoutX="772.0" layoutY="397.0" mnemonicParsing="false" onAction="#set10Mbps_btn_pressed" text="10Mbps" />
       <Button fx:id="phySetSpeed100" layoutX="838.0" layoutY="397.0" mnemonicParsing="false" onAction="#set100Mbps_btn_pressed" text="100Mbps" />
       <Button fx:id="phySetSpeed1000" layoutX="912.0" layoutY="397.0" mnemonicParsing="false" onAction="#set1000Mbps_btn_pressed" text="1000Mbps" />
+      <Button fx:id="writeToSensorBtn" layoutX="636.0" layoutY="63.0" mnemonicParsing="false" onAction="#writeToSensorBtn_Pressed" prefHeight="25.0" prefWidth="108.0" text="Write To Sensor" />
+      <TabPane layoutX="398.0" layoutY="177.0" prefHeight="398.0" prefWidth="363.0" style="-fx-border-color: BLACK;" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab fx:id="edspTAB" text="EDSP">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="343.0" prefWidth="200.0">
+                     <children>
+                          <TextArea fx:id="uartTerminal" prefHeight="369.0" prefWidth="363.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab fx:id="gppTAB" text="GPP">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="GPPTerminal" prefHeight="369.0" prefWidth="363.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="CRYPTO">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="343.0" prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="cryptoTerminal" prefHeight="369.0" prefWidth="363.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+      <Line endX="40.0" layoutX="955.0" layoutY="43.0" startX="-100.0" />
+      <Line endX="40.0" layoutX="955.0" layoutY="157.0" startX="-100.0" />
+      <Line endX="-100.0" endY="113.0" layoutX="954.0" layoutY="44.0" startX="-100.0" />
+      <Line endX="-100.0" endY="113.0" layoutX="1095.0" layoutY="44.0" startX="-100.0" />
+      <Label layoutX="858.0" layoutY="92.0" text="PORT0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Line endX="40.0" layoutX="814.0" layoutY="100.0" startX="-31.0" />
+      <Label layoutX="801.0" layoutY="84.0" text="SGMII">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="959.0" layoutY="92.0" text="PORT1" />
+      <Line endX="40.0" layoutX="1027.0" layoutY="100.0" startX="-31.0" />
+      <Label layoutX="1014.0" layoutY="84.0" text="MDI" />
+      <Label layoutX="747.0" layoutY="91.0" text="EDSP">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="1069.0" layoutY="91.0" text="PC" />
+      <Label layoutX="860.0" layoutY="16.0" text="BLACK PHY">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Label>
+      <Line endX="40.0" layoutX="1134.0" layoutY="453.0" startX="-100.0" />
+      <Line endX="40.0" layoutX="1134.0" layoutY="567.0" startX="-100.0" />
+      <Line endX="-100.0" endY="113.0" layoutX="1133.0" layoutY="454.0" startX="-100.0" />
+      <Line endX="-100.0" endY="113.0" layoutX="1274.0" layoutY="454.0" startX="-100.0" />
+      <Label layoutX="1036.0" layoutY="469.0" text="PORT0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Line endX="40.0" layoutX="992.0" layoutY="477.0" startX="-31.0" />
+      <Label layoutX="979.0" layoutY="461.0" text="SGMII">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Line endX="40.0" layoutX="1207.0" layoutY="477.0" startX="-31.0" />
+      <Label layoutX="1200.0" layoutY="462.0" text="MDI" />
+      <Label layoutX="1248.0" layoutY="473.0" text="PC" />
+      <Label layoutX="1058.0" layoutY="422.0" text="RED PHY">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Label>
+      <Label layoutX="1036.0" layoutY="534.0" text="PORT1">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Line endX="40.0" layoutX="992.0" layoutY="542.0" startX="-31.0" />
+      <Label layoutX="979.0" layoutY="526.0" text="SGMII">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="1134.0" layoutY="472.0" text="PORT1" />
+      <Line endX="40.0" layoutX="1203.0" layoutY="542.0" startX="-31.0" />
+      <Label layoutX="1200.0" layoutY="526.0" text="MDI" />
+      <Label layoutX="1244.0" layoutY="539.0" text="PC" />
+      <Label layoutX="1134.0" layoutY="534.0" text="PORT3" />
+      <Line endX="40.0" layoutX="922.0" layoutY="449.0" startX="-100.0" />
+      <Line endX="40.0" layoutX="922.0" layoutY="563.0" startX="-100.0" />
+      <Line endX="-100.0" endY="113.0" layoutX="921.0" layoutY="450.0" startX="-100.0" />
+      <Line endX="-100.0" endY="113.0" layoutX="1062.0" layoutY="450.0" startX="-100.0" />
+      <Label layoutX="824.0" layoutY="470.0" text="PORT2">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="827.0" layoutY="422.0" text="RED ETH SW">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Label>
+      <Label layoutX="825.0" layoutY="491.0" text="PORT3">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="925.0" layoutY="468.0" text="PORT0" />
+      <Label layoutX="925.0" layoutY="533.0" text="PORT1" />
+      <Line endX="40.0" layoutX="785.0" layoutY="479.0" startX="3.0" />
+      <Label layoutX="825.0" layoutY="511.0" text="PORT4">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Line endX="40.0" layoutX="785.0" layoutY="499.0" startX="3.0" />
+      <Line endX="40.0" layoutX="782.0" layoutY="519.0" startX="3.0" />
+      <Label layoutX="784.0" layoutY="460.0" text="SGMII">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="761.0" layoutY="483.0" text="GPP">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="824.0" layoutY="542.0" text="PORT5">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Line endX="40.0" layoutX="779.0" layoutY="551.0" startX="3.0" />
+      <Label layoutX="766.0" layoutY="533.0" text="EDSP">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Button fx:id="phyInit1" layoutX="982.0" layoutY="313.0" mnemonicParsing="false" onAction="#phyInit1_btnPressed" text="Phy Init1" />
+      <Button fx:id="phyInit2" layoutX="1062.0" layoutY="313.0" mnemonicParsing="false" onAction="#phyInit2_btnPressed" prefHeight="25.0" prefWidth="67.0" text="Phy Init2" />
+      <ToggleButton fx:id="phy_ethSw_Toggle" layoutX="981.0" layoutY="231.0" mnemonicParsing="false" onAction="#ToggleBtnWsPressed" text="ETH_SWITCH" />
+      <Label layoutX="801.0" layoutY="67.0" text="TSEC3" textFill="#fc9696">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="816.0" layoutY="149.0" text="tsec3">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="767.0" layoutY="554.0" text="TSEC4" textFill="#fc9696">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Button fx:id="fixBlackETH_btn2" layoutX="894.0" layoutY="165.0" mnemonicParsing="false" onAction="#fixBlackETH_btnPressed" text="FIX RED ETH PORT1" />
+        <Button fx:id="fixRedETH_btn2" layoutX="1050.0" layoutY="165.0" mnemonicParsing="false" onAction="#fixRedETH_btnPressed" text="FIX RED ETH PORT3" />
     </children>
 </Pane>
