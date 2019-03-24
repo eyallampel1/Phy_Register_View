@@ -67,13 +67,15 @@ public class Controller {
     @FXML
     TableView<RegisterModel> registerTable;
     @FXML
-    TextField userWantsToSendThis,phyPort,phyRegister,phyPage;
+    TextField userWantsToSendThis, phyPort, phyRegister, phyPage;
     @FXML
-    Button SendToTerminalBTN,phySetSpeed10,phySetSpeed100,phySetSpeed1000,phyRead,phyWrite,writeToSensorBtn,phyInit1,phyInit2;
-
+    Button SendToTerminalBTN, phySetSpeed10, phySetSpeed100, phySetSpeed1000, phyRead, phyWrite, writeToSensorBtn, phyInit1, phyInit2,fixBlackETH_btn2,fixRedETH_btn2;
 
     @FXML
-    TextArea uartTerminal,GPPTerminal,cryptoTerminal;
+    ToggleButton phy_ethSw_Toggle;
+
+    @FXML
+    TextArea uartTerminal, GPPTerminal, cryptoTerminal;
 
 
     @FXML
@@ -84,27 +86,31 @@ public class Controller {
     @FXML
     TextArea registerDescription;
 
-    SerialPort serialPort;
+    @FXML
+    Tab edspTAB, gppTAB;
+
+    SerialPort serialPort, serialPort2;
     Robot robot;
     hexToBin hextobin = new hexToBin();
-    String fourBinString, oneHexChar,rawBuffer,inputString,readUart;
+    String fourBinString, oneHexChar, rawBuffer, rawBuffer2, inputString, readUart;
     FileWriter myFile;
-    BufferedReader bR=null;
+    BufferedReader bR = null;
     File myTextFile;
-int index=0,phyindexInteger=0;
-int userSentSomtingToUART=1;
+    int index = 0, phyindexInteger = 0;
+    int userSentSomtingToUART = 1;
 
     public void initialize() {
+
         try {
-            robot=new Robot();
+            robot = new Robot();
         } catch (AWTException e) {
             e.printStackTrace();
         }
 
         try {
-            myTextFile=new File("d:\\text.txt");
+            myTextFile = new File("d:\\text.txt");
             myFile = new FileWriter("d:\\text.txt");
-            bR=new BufferedReader(new FileReader("d:\\text.txt"));
+            bR = new BufferedReader(new FileReader("d:\\text.txt"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -146,12 +152,1093 @@ int userSentSomtingToUART=1;
 
     }
 
-    public void sendToTerminalBtnPressed() throws SerialPortException  {
-        writeToUartTerminal(userWantsToSendThis.getText()+"\n",1);
-            serialPort.writeString(userWantsToSendThis.getText()+"\n");
+    public void fixRedETH_btnPressed() throws SerialPortException, InterruptedException{
+        ///eth switch fix
+        //spi_util 0x80400016 --  MDIO_Addr , write to phy adress 0 ,select register  22 decimal = 16 hex (this is the page select register) - defult value 0000
+        //spi_util 0x80420000 --  perform a write operation - 0=write 1=read
+        //spi_util 0x80460006 -- this is the wr vector - fill with 0006 - move to page 6
+        //spi_util 0x80480001 -- start execute
+        //spi_util 0x004a0000 -- check done status is 1
+//
+//write seq
+        writeToUartTerminal2("spi_util 0x80401000 \n", 1);
+        serialPort2.writeString("spi_util 0x80401000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80465086 \n", 1);
+        serialPort2.writeString("spi_util 0x80465086 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+        //write seq
+        writeToUartTerminal2("spi_util 0x80401100 \n", 1);
+        serialPort2.writeString("spi_util 0x80401100 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80465086 \n", 1);
+        serialPort2.writeString("spi_util 0x80465086 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
 
+        writeToUartTerminal2("spi_util 0x80401b04 \n", 1);
+        serialPort2.writeString("spi_util 0x80401b04 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80460081 \n", 1);
+        serialPort2.writeString("spi_util 0x80460081 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+        writeToUartTerminal("spi_util 0x8040" + "00" + "16\n", 1);
+        serialPort.writeString("spi_util 0x8040" + "00" + "16\n");
+        Thread.sleep(100);
+        writeToUartTerminal("spi_util 0x80420000\n", 1);
+        serialPort.writeString("spi_util 0x80420000\n");
+        Thread.sleep(100);
+        writeToUartTerminal("spi_util 0x8046000" + "0" + "\n", 1);
+        serialPort.writeString("spi_util 0x8046000" + "0" + "\n");
+        Thread.sleep(100);
+        writeToUartTerminal("spi_util 0x80480001\n", 1);
+        serialPort.writeString("spi_util 0x80480001\n");
+        Thread.sleep(100);
+        writeToUartTerminal("spi_util 0x004a0000\n", 1);
+        serialPort.writeString("spi_util 0x004a0000\n");
+        Thread.sleep(100);
+
+        writeToUartTerminal("spi_util 0x8040" + "01" + "16\n", 1);
+        serialPort.writeString("spi_util 0x8040" + "01" + "16\n");
+        Thread.sleep(100);
+        writeToUartTerminal("spi_util 0x80420000\n", 1);
+        serialPort.writeString("spi_util 0x80420000\n");
+        Thread.sleep(100);
+        writeToUartTerminal("spi_util 0x8046000" + "0" + "\n", 1);
+        serialPort.writeString("spi_util 0x8046000" + "0" + "\n");
+        Thread.sleep(100);
+        writeToUartTerminal("spi_util 0x80480001\n", 1);
+        serialPort.writeString("spi_util 0x80480001\n");
+        Thread.sleep(100);
+        writeToUartTerminal("spi_util 0x004a0000\n", 1);
+        serialPort.writeString("spi_util 0x004a0000\n");
+        Thread.sleep(100);
+
+
+        writeToUartTerminal2("spi_util 0x80400010 \n", 1);
+        serialPort2.writeString("spi_util 0x80400010 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80463b60 \n", 1);
+        serialPort2.writeString("spi_util 0x80463b60 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+        writeToUartTerminal2("spi_util 0x80400110 \n", 1);
+        serialPort2.writeString("spi_util 0x80400110 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80463b60 \n", 1);
+        serialPort2.writeString("spi_util 0x80463b60 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+        writeToUartTerminal2("spi_util 0x80401b04 \n", 1);
+        serialPort2.writeString("spi_util 0x80401b04 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x8046c081 \n", 1);
+        serialPort2.writeString("spi_util 0x8046c081 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+        writeToUartTerminal2("spi_util 0x80401214 \n", 1);
+        serialPort2.writeString("spi_util 0x80401214 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80468403 \n", 1);
+        serialPort2.writeString("spi_util 0x80468403 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+        writeToUartTerminal2("spi_util 0x80401314 \n", 1);
+        serialPort2.writeString("spi_util 0x80401314 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80468403 \n", 1);
+        serialPort2.writeString("spi_util 0x80468403 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+        writeToUartTerminal2("spi_util 0x80401414 \n", 1);
+        serialPort2.writeString("spi_util 0x80401414 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80468403 \n", 1);
+        serialPort2.writeString("spi_util 0x80468403 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+        writeToUartTerminal2("spi_util 0x80401514 \n", 1);
+        serialPort2.writeString("spi_util 0x80401514 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80468403 \n", 1);
+        serialPort2.writeString("spi_util 0x80468403 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+        writeToUartTerminal2("spi_util 0x80401200 \n", 1);
+        serialPort2.writeString("spi_util 0x80401200 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80461086 \n", 1);
+        serialPort2.writeString("spi_util 0x80461086 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+        writeToUartTerminal2("spi_util 0x80401300 \n", 1);
+        serialPort2.writeString("spi_util 0x80401300 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80461086 \n", 1);
+        serialPort2.writeString("spi_util 0x80461086 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+        writeToUartTerminal2("spi_util 0x80401400 \n", 1);
+        serialPort2.writeString("spi_util 0x80401400 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80461086 \n", 1);
+        serialPort2.writeString("spi_util 0x80461086 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+        writeToUartTerminal2("spi_util 0x80401500 \n", 1);
+        serialPort2.writeString("spi_util 0x80401500 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80461086 \n", 1);
+        serialPort2.writeString("spi_util 0x80461086 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+        writeToUartTerminal2("spi_util 0x80401201 \n", 1);
+        serialPort2.writeString("spi_util 0x80401201 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x8046c1fe \n", 1);
+        serialPort2.writeString("spi_util 0x8046c1fe \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+        writeToUartTerminal2("spi_util 0x80401301 \n", 1);
+        serialPort2.writeString("spi_util 0x80401301 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x8046c1fe \n", 1);
+        serialPort2.writeString("spi_util 0x8046c1fe \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+        writeToUartTerminal2("spi_util 0x80401401 \n", 1);
+        serialPort2.writeString("spi_util 0x80401401 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x8046c1fe \n", 1);
+        serialPort2.writeString("spi_util 0x8046c1fe \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+        writeToUartTerminal2("spi_util 0x80401501 \n", 1);
+        serialPort2.writeString("spi_util 0x80401501 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x8046c1fe \n", 1);
+        serialPort2.writeString("spi_util 0x8046c1fe \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+
+        writeToUartTerminal2("spi_util 0x80401b04 \n", 1);
+        serialPort2.writeString("spi_util 0x80401b04 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x8046c081 \n", 1);
+        serialPort2.writeString("spi_util 0x8046c081 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
+
+
+        writeToUartTerminal2("spi_util 0x80401001 \n", 1);
+        serialPort2.writeString("spi_util 0x80401001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+        serialPort2.writeString("spi_util 0x80420000 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x804628fe \n", 1);
+        serialPort2.writeString("spi_util 0x804628fe \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+        serialPort2.writeString("spi_util 0x80480001 \n");
+        Thread.sleep(10);
+        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+        serialPort2.writeString("spi_util 0x004a0000 \n");
+        Thread.sleep(10);
 
     }
+
+
+    public void fixBlackETH_btnPressed() throws SerialPortException, InterruptedException{
+        if(edspTAB.isSelected()) {
+            writeToUartTerminal("spi_util 0x80400016\n", 1);
+            serialPort.writeString("spi_util 0x80400016\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80420000\n", 1);
+            serialPort.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80460006\n", 1);
+            serialPort.writeString("spi_util 0x80460006\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80480001\n", 1);
+            serialPort.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x004a0000\n", 1);
+            serialPort.writeString("spi_util 0x004a0000\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80400014\n", 1);
+            serialPort.writeString("spi_util 0x80400014\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80420000\n", 1);
+            serialPort.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80468205\n", 1);
+            serialPort.writeString("spi_util 0x80468205\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80480001\n", 1);
+            serialPort.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80400116\n", 1);
+            serialPort.writeString("spi_util 0x80400116\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80420000\n", 1);
+            serialPort.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80460006\n", 1);
+            serialPort.writeString("spi_util 0x80460006\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80480001\n", 1);
+            serialPort.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80400114 \n", 1);
+            serialPort.writeString("spi_util 0x80400114 \n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80420000\n", 1);
+            serialPort.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80468217\n", 1);
+            serialPort.writeString("spi_util 0x80468217\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80480001\n", 1);
+            serialPort.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80400016\n", 1);
+            serialPort.writeString("spi_util 0x80400016\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80420000\n", 1);
+            serialPort.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80460004\n", 1);
+            serialPort.writeString("spi_util 0x80460004\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80480001\n", 1);
+            serialPort.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80400000\n", 1);
+            serialPort.writeString("spi_util 0x80400000\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80420000\n", 1);
+            serialPort.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80469140\n", 1);
+            serialPort.writeString("spi_util 0x80469140\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80480001\n", 1);
+            serialPort.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80400010\n", 1);
+            serialPort.writeString("spi_util 0x80400010\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80420000\n", 1);
+            serialPort.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80466625\n", 1);
+            serialPort.writeString("spi_util 0x80466625\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80480001\n", 1);
+            serialPort.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x8040001a\n", 1);
+            serialPort.writeString("spi_util 0x8040001a\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80420000\n", 1);
+            serialPort.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80463002\n", 1);
+            serialPort.writeString("spi_util 0x80463002\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80480001\n", 1);
+            serialPort.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80400116\n", 1);
+            serialPort.writeString("spi_util 0x80400116\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80420000\n", 1);
+            serialPort.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80460004\n", 1);
+            serialPort.writeString("spi_util 0x80460004\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80480001\n", 1);
+            serialPort.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80400100\n", 1);
+            serialPort.writeString("spi_util 0x80400100\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80420000\n", 1);
+            serialPort.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80469140\n", 1);
+            serialPort.writeString("spi_util 0x80469140\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80480001\n", 1);
+            serialPort.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80400110\n", 1);
+            serialPort.writeString("spi_util 0x80400110\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80420000\n", 1);
+            serialPort.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80466624\n", 1);
+            serialPort.writeString("spi_util 0x80466624\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80480001\n", 1);
+            serialPort.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x8040001b\n", 1);
+            serialPort.writeString("spi_util 0x8040001b\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80420000\n", 1);
+            serialPort.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80467e03\n", 1);
+            serialPort.writeString("spi_util 0x80467e03\n");
+            Thread.sleep(10);
+            writeToUartTerminal("spi_util 0x80480001 \n", 1);
+            serialPort.writeString("spi_util 0x80480001 \n");
+            Thread.sleep(10);
+        }
+        else{
+            writeToUartTerminal2("spi_util 0x80400016\n", 1);
+            serialPort2.writeString("spi_util 0x80400016\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80420000\n", 1);
+            serialPort2.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80460006\n", 1);
+            serialPort2.writeString("spi_util 0x80460006\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80480001\n", 1);
+            serialPort2.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x004a0000\n", 1);
+            serialPort2.writeString("spi_util 0x004a0000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80400014\n", 1);
+            serialPort2.writeString("spi_util 0x80400014\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80420000\n", 1);
+            serialPort2.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80468205\n", 1);
+            serialPort2.writeString("spi_util 0x80468205\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80480001\n", 1);
+            serialPort2.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80400116\n", 1);
+            serialPort2.writeString("spi_util 0x80400116\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80420000\n", 1);
+            serialPort2.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80460006\n", 1);
+            serialPort2.writeString("spi_util 0x80460006\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80480001\n", 1);
+            serialPort2.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80400114 \n", 1);
+            serialPort2.writeString("spi_util 0x80400114 \n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80420000\n", 1);
+            serialPort2.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80468217\n", 1);
+            serialPort2.writeString("spi_util 0x80468217\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80480001\n", 1);
+            serialPort2.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80400016\n", 1);
+            serialPort2.writeString("spi_util 0x80400016\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80420000\n", 1);
+            serialPort2.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80460004\n", 1);
+            serialPort2.writeString("spi_util 0x80460004\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80480001\n", 1);
+            serialPort2.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80400000\n", 1);
+            serialPort2.writeString("spi_util 0x80400000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80420000\n", 1);
+            serialPort2.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80469140\n", 1);
+            serialPort2.writeString("spi_util 0x80469140\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80480001\n", 1);
+            serialPort2.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80400010\n", 1);
+            serialPort2.writeString("spi_util 0x80400010\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80420000\n", 1);
+            serialPort2.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80466625\n", 1);
+            serialPort2.writeString("spi_util 0x80466625\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80480001\n", 1);
+            serialPort2.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x8040001a\n", 1);
+            serialPort2.writeString("spi_util 0x8040001a\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80420000\n", 1);
+            serialPort2.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80463002\n", 1);
+            serialPort2.writeString("spi_util 0x80463002\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80480001\n", 1);
+            serialPort2.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80400116\n", 1);
+            serialPort2.writeString("spi_util 0x80400116\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80420000\n", 1);
+            serialPort2.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80460004\n", 1);
+            serialPort2.writeString("spi_util 0x80460004\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80480001\n", 1);
+            serialPort2.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80400100\n", 1);
+            serialPort2.writeString("spi_util 0x80400100\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80420000\n", 1);
+            serialPort2.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80469140\n", 1);
+            serialPort2.writeString("spi_util 0x80469140\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80480001\n", 1);
+            serialPort2.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80400110\n", 1);
+            serialPort2.writeString("spi_util 0x80400110\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80420000\n", 1);
+            serialPort2.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80466624\n", 1);
+            serialPort2.writeString("spi_util 0x80466624\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80480001\n", 1);
+            serialPort2.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x8040001b\n", 1);
+            serialPort2.writeString("spi_util 0x8040001b\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80420000\n", 1);
+            serialPort2.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80467e03\n", 1);
+            serialPort2.writeString("spi_util 0x80467e03\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+            serialPort2.writeString("spi_util 0x80480001 \n");
+            Thread.sleep(100);
+//        ///eth switch fix
+//        //spi_util 0x80400016 --  MDIO_Addr , write to phy adress 0 ,select register  22 decimal = 16 hex (this is the page select register) - defult value 0000
+//        //spi_util 0x80420000 --  perform a write operation - 0=write 1=read
+//        //spi_util 0x80460006 -- this is the wr vector - fill with 0006 - move to page 6
+//        //spi_util 0x80480001 -- start execute
+//        //spi_util 0x004a0000 -- check done status is 1
+////
+////write seq
+//        writeToUartTerminal2("spi_util 0x80401000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80465086 \n", 1);
+//        serialPort2.writeString("spi_util 0x80465086 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//        //write seq
+//        writeToUartTerminal2("spi_util 0x80401100 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401100 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80465086 \n", 1);
+//        serialPort2.writeString("spi_util 0x80465086 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal2("spi_util 0x80401b04 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401b04 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80460081 \n", 1);
+//        serialPort2.writeString("spi_util 0x80460081 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal("spi_util 0x8040" + "00" + "16\n", 1);
+//        serialPort.writeString("spi_util 0x8040" + "00" + "16\n");
+//        Thread.sleep(100);
+//        writeToUartTerminal("spi_util 0x80420000\n", 1);
+//        serialPort.writeString("spi_util 0x80420000\n");
+//        Thread.sleep(100);
+//        writeToUartTerminal("spi_util 0x8046000" + "0" + "\n", 1);
+//        serialPort.writeString("spi_util 0x8046000" + "0" + "\n");
+//        Thread.sleep(100);
+//        writeToUartTerminal("spi_util 0x80480001\n", 1);
+//        serialPort.writeString("spi_util 0x80480001\n");
+//        Thread.sleep(100);
+//        writeToUartTerminal("spi_util 0x004a0000\n", 1);
+//        serialPort.writeString("spi_util 0x004a0000\n");
+//        Thread.sleep(100);
+//
+//        writeToUartTerminal("spi_util 0x8040" + "01" + "16\n", 1);
+//        serialPort.writeString("spi_util 0x8040" + "01" + "16\n");
+//        Thread.sleep(100);
+//        writeToUartTerminal("spi_util 0x80420000\n", 1);
+//        serialPort.writeString("spi_util 0x80420000\n");
+//        Thread.sleep(100);
+//        writeToUartTerminal("spi_util 0x8046000" + "0" + "\n", 1);
+//        serialPort.writeString("spi_util 0x8046000" + "0" + "\n");
+//        Thread.sleep(100);
+//        writeToUartTerminal("spi_util 0x80480001\n", 1);
+//        serialPort.writeString("spi_util 0x80480001\n");
+//        Thread.sleep(100);
+//        writeToUartTerminal("spi_util 0x004a0000\n", 1);
+//        serialPort.writeString("spi_util 0x004a0000\n");
+//        Thread.sleep(100);
+//
+//
+//        writeToUartTerminal2("spi_util 0x80400010 \n", 1);
+//        serialPort2.writeString("spi_util 0x80400010 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80463b60 \n", 1);
+//        serialPort2.writeString("spi_util 0x80463b60 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal2("spi_util 0x80400110 \n", 1);
+//        serialPort2.writeString("spi_util 0x80400110 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80463b60 \n", 1);
+//        serialPort2.writeString("spi_util 0x80463b60 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal2("spi_util 0x80401b04 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401b04 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x8046c081 \n", 1);
+//        serialPort2.writeString("spi_util 0x8046c081 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal2("spi_util 0x80401214 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401214 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80468403 \n", 1);
+//        serialPort2.writeString("spi_util 0x80468403 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal2("spi_util 0x80401314 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401314 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80468403 \n", 1);
+//        serialPort2.writeString("spi_util 0x80468403 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal2("spi_util 0x80401414 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401414 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80468403 \n", 1);
+//        serialPort2.writeString("spi_util 0x80468403 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal2("spi_util 0x80401514 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401514 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80468403 \n", 1);
+//        serialPort2.writeString("spi_util 0x80468403 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal2("spi_util 0x80401200 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401200 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80461086 \n", 1);
+//        serialPort2.writeString("spi_util 0x80461086 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal2("spi_util 0x80401300 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401300 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80461086 \n", 1);
+//        serialPort2.writeString("spi_util 0x80461086 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal2("spi_util 0x80401400 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401400 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80461086 \n", 1);
+//        serialPort2.writeString("spi_util 0x80461086 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal2("spi_util 0x80401500 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401500 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80461086 \n", 1);
+//        serialPort2.writeString("spi_util 0x80461086 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal2("spi_util 0x80401201 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401201 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x8046c1fe \n", 1);
+//        serialPort2.writeString("spi_util 0x8046c1fe \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal2("spi_util 0x80401301 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401301 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x8046c1fe \n", 1);
+//        serialPort2.writeString("spi_util 0x8046c1fe \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal2("spi_util 0x80401401 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401401 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x8046c1fe \n", 1);
+//        serialPort2.writeString("spi_util 0x8046c1fe \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//        writeToUartTerminal2("spi_util 0x80401501 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401501 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x8046c1fe \n", 1);
+//        serialPort2.writeString("spi_util 0x8046c1fe \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//
+//        writeToUartTerminal2("spi_util 0x80401b04 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401b04 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x8046c081 \n", 1);
+//        serialPort2.writeString("spi_util 0x8046c081 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+//
+//
+//        writeToUartTerminal2("spi_util 0x80401001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80401001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80420000 \n", 1);
+//        serialPort2.writeString("spi_util 0x80420000 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x804628fe \n", 1);
+//        serialPort2.writeString("spi_util 0x804628fe \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x80480001 \n", 1);
+//        serialPort2.writeString("spi_util 0x80480001 \n");
+//        Thread.sleep(10);
+//        writeToUartTerminal2("spi_util 0x004a0000 \n", 1);
+//        serialPort2.writeString("spi_util 0x004a0000 \n");
+//        Thread.sleep(10);
+        }
+
+    }
+
+    public void ToggleBtnWsPressed() throws SerialPortException, InterruptedException {
+        if(phy_ethSw_Toggle.getText().equals("PHY")){
+            //write sequence
+            writeToUartTerminal2("spi_util 0x80401B04\n",1);
+            serialPort2.writeString("spi_util 0x80401B04\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80420000\n",1);
+            serialPort2.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80464081\n",1);
+            serialPort2.writeString("spi_util 0x80464081\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80480001\n",1);
+            serialPort2.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x004a0000\n",1);
+            serialPort2.writeString("spi_util 0x004a0000\n");
+
+            Thread.sleep(10);
+
+            phy_ethSw_Toggle.setText("ETH_SWITCH");
+
+        }
+        else {
+            //write sequence
+            writeToUartTerminal2("spi_util 0x80401B04\n",1);
+            serialPort2.writeString("spi_util 0x80401B04\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80420000\n",1);
+            serialPort2.writeString("spi_util 0x80420000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80460081\n",1);
+            serialPort2.writeString("spi_util 0x80460081\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80480001\n",1);
+            serialPort2.writeString("spi_util 0x80480001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x004a0000\n",1);
+            serialPort2.writeString("spi_util 0x004a0000\n");
+
+            Thread.sleep(10);
+            phy_ethSw_Toggle.setText("PHY");
+        }
+    }
+
+    public void sendToTerminalBtnPressed() throws SerialPortException  {
+        // writeToUartTerminal(userWantsToSendThis.getText()+"\n",1);
+        if(edspTAB.isSelected()) {
+            serialPort.writeString(userWantsToSendThis.getText() + "\n");
+        }
+        else {
+            serialPort2.writeString(userWantsToSendThis.getText() + "\n");
+        }
+    }
+
+
 
     public void displaybin0ToHex0() {
         displayBinToHex("bin0");
@@ -234,33 +1321,60 @@ int userSentSomtingToUART=1;
                     )),
                     SerialPort.MASK_RXCHAR);
 
-          //  writeToUartTerminal("Hurrah!");
-      //      serialPort.writeString("Hurrah!");
+            //  writeToUartTerminal("Hurrah!");
+            //      serialPort.writeString("Hurrah!");
         }
         catch (SerialPortException ex) {
             System.out.println("There are an error on writing string to port т: " + ex);
         }
+
+        serialPort2 = new SerialPort("COM7");
+        try {
+            serialPort2.openPort();
+
+            serialPort2.setParams(SerialPort.BAUDRATE_115200,
+                    SerialPort.DATABITS_8,
+                    SerialPort.STOPBITS_1,
+                    SerialPort.PARITY_NONE);
+
+
+
+            serialPort2.addEventListener(
+                    new PortReader2(   buffer2 -> Platform.runLater(() ->
+                            writeToUartTerminal2(buffer2,1)
+                    )),
+                    SerialPort.MASK_RXCHAR);
+
+            //  writeToUartTerminal("Hurrah!");
+            //      serialPort.writeString("Hurrah!");
+        }
+        catch (SerialPortException ex) {
+            System.out.println("There are an error on writing string to port т: " + ex);
+        }
+
+
+
     }
 
-public void writeToTextFile(String text)
-{
-    try {
+    public void writeToTextFile(String text)
+    {
+        try {
 
-   myFile.append(text+"\n");
-myFile.flush();
-    } catch (Exception e) {
-        e.printStackTrace();
+            myFile.append(text+"\n");
+            myFile.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
-
-}
 
     public void writeToUartTerminal(String buffer,int mode){
-if(phyindexInteger==1) {
-    index=1;
-}
+        if(phyindexInteger==1) {
+            index=1;
+        }
 
 
-                            rawBuffer=buffer;
+        rawBuffer=buffer;
         writeToTextFile(buffer);
         if (buffer!=null) {
             Platform.runLater(new Runnable() {
@@ -274,12 +1388,12 @@ if(phyindexInteger==1) {
 
         if (index==1){
             phyindexInteger+=1;
-           if (phyindexInteger==23){
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               readUart=buffer.substring(buffer.indexOf("0x")+2);
-               hex0.setText(readUart.charAt(3)+"");
-               hex1.setText(readUart.charAt(2)+"");
-               hex2.setText(readUart.charAt(1)+"");
-               hex3.setText(readUart.charAt(0)+"")             ;
+            if (phyindexInteger==23){
+                readUart=buffer.substring(buffer.indexOf("0x")+2);
+                hex0.setText(readUart.charAt(3)+"");
+                hex1.setText(readUart.charAt(2)+"");
+                hex2.setText(readUart.charAt(1)+"");
+                hex3.setText(readUart.charAt(0)+"")             ;
 
                 hex3.requestFocus();
 
@@ -309,13 +1423,13 @@ if(phyindexInteger==1) {
 
             hex3.requestFocus();
 
-                robot.keyPress(KeyEvent.VK_TAB);
+            robot.keyPress(KeyEvent.VK_TAB);
             robot.keyRelease(KeyEvent.VK_TAB);
-                robot.keyPress(KeyEvent.VK_TAB);
+            robot.keyPress(KeyEvent.VK_TAB);
             robot.keyRelease(KeyEvent.VK_TAB);
-                robot.keyPress(KeyEvent.VK_TAB);
+            robot.keyPress(KeyEvent.VK_TAB);
             robot.keyRelease(KeyEvent.VK_TAB);
-                robot.keyPress(KeyEvent.VK_TAB);
+            robot.keyPress(KeyEvent.VK_TAB);
             robot.keyRelease(KeyEvent.VK_TAB);
 
             userSentSomtingToUART=1;
@@ -329,28 +1443,125 @@ if(phyindexInteger==1) {
 
 
 
-if(mode==2){
-    uartTerminal.appendText(buffer);
-    try {
-        serialPort.writeString(buffer);
-        inputString=serialPort.readString(100,100);
+        if(mode==2){
+            uartTerminal.appendText(buffer);
+            try {
+                serialPort.writeString(buffer);
+                inputString=serialPort.readString(100,100);
 
-    } catch (SerialPortException e) {
-        e.printStackTrace();
-    } catch (SerialPortTimeoutException e) {
-        e.printStackTrace();
-    }
+            } catch (SerialPortException e) {
+                e.printStackTrace();
+            } catch (SerialPortTimeoutException e) {
+                e.printStackTrace();
+            }
 
 
-}
+        }
 //     if(index==0) {
 //         index=1;
 //         writeToUartTerminal(buffer); //to delete
 //
 //     }
 
-     }
+    }
 
+    public void writeToUartTerminal2(String buffer2,int mode){
+
+        if(phyindexInteger==1) {
+            index=1;
+        }
+
+
+        rawBuffer2=buffer2;
+
+        if (buffer2!=null) {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    GPPTerminal.appendText(buffer2);
+                }
+            });
+
+        }
+
+        if (index==1){
+            phyindexInteger+=1;
+            if (phyindexInteger==23){
+                readUart=buffer2.substring(buffer2.indexOf("0x")+2);
+                hex0.setText(readUart.charAt(3)+"");
+                hex1.setText(readUart.charAt(2)+"");
+                hex2.setText(readUart.charAt(1)+"");
+                hex3.setText(readUart.charAt(0)+"")             ;
+
+                hex3.requestFocus();
+
+                robot.keyPress(KeyEvent.VK_TAB);
+                robot.keyRelease(KeyEvent.VK_TAB);
+                robot.keyPress(KeyEvent.VK_TAB);
+                robot.keyRelease(KeyEvent.VK_TAB);
+                robot.keyPress(KeyEvent.VK_TAB);
+                robot.keyRelease(KeyEvent.VK_TAB);
+                robot.keyPress(KeyEvent.VK_TAB);
+                robot.keyRelease(KeyEvent.VK_TAB);
+
+                index=0;
+                phyindexInteger=0;
+            }
+
+        }
+
+
+        if(userSentSomtingToUART==3){
+            readUart=buffer2.substring(buffer2.indexOf("0x")+2);
+
+            hex0.setText(readUart.charAt(3)+"");
+            hex1.setText(readUart.charAt(2)+"");
+            hex2.setText(readUart.charAt(1)+"");
+            hex3.setText(readUart.charAt(0)+"");
+
+            hex3.requestFocus();
+
+            robot.keyPress(KeyEvent.VK_TAB);
+            robot.keyRelease(KeyEvent.VK_TAB);
+            robot.keyPress(KeyEvent.VK_TAB);
+            robot.keyRelease(KeyEvent.VK_TAB);
+            robot.keyPress(KeyEvent.VK_TAB);
+            robot.keyRelease(KeyEvent.VK_TAB);
+            robot.keyPress(KeyEvent.VK_TAB);
+            robot.keyRelease(KeyEvent.VK_TAB);
+
+            userSentSomtingToUART=1;
+        }
+
+        if(userSentSomtingToUART==2){
+            userSentSomtingToUART+=1;
+
+        }
+
+
+
+
+        if(mode==2){
+            uartTerminal.appendText(buffer2);
+            try {
+                serialPort.writeString(buffer2);
+                inputString=serialPort.readString(100,100);
+
+            } catch (SerialPortException e) {
+                e.printStackTrace();
+            } catch (SerialPortTimeoutException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+//     if(index==0) {
+//         index=1;
+//         writeToUartTerminal(buffer); //to delete
+//
+//     }
+
+    }
 
     public void displayBinToHex(String whichBinNibbel) {
         switch (whichBinNibbel) {
@@ -382,10 +1593,10 @@ if(mode==2){
         String aa = "Black Sofware Reset";
         String bb = "Black Blanks";
         String cc = "Black Discretes Status";
-
+        String dd = "RED FPGA";
 
         list.removeAll(list);
-        list.addAll(a, b,c,d,e,f,g,h,i,k,j,l,aa,bb,cc);
+        list.addAll(a, b,c,d,e,f,g,h,i,k,j,l,aa,bb,cc,dd);
 
         deviceSelect.getItems().addAll(list);
         deviceSelect.getSelectionModel().selectFirst();
@@ -398,9 +1609,9 @@ if(mode==2){
                 if(deviceSelect.getItems().get((Integer) number2).equals("Black PHY")) {
                     initRegisterNames_Phy_TableView();
                 }
-                   else if(deviceSelect.getItems().get((Integer) number2).equals("Black FPGA"))   {
+                else if(deviceSelect.getItems().get((Integer) number2).equals("Black FPGA"))   {
                     initRegisterNames_TableView();
-                    }
+                }
 
                 else if(deviceSelect.getItems().get((Integer) number2).equals("Black ETC"))   {
                     initRegisterNames_Black_ETC();
@@ -432,13 +1643,38 @@ if(mode==2){
                 else if(deviceSelect.getItems().get((Integer) number2).equals("Black Discretes Status"))   {
                     initRegisterNames_Black_discreat_status();
                 }
-
-
+                else if(deviceSelect.getItems().get((Integer) number2).equals("RED FPGA"))   {
+                    initRegisterNames_TableView2();
                 }
+
+            }
 
         });
 
 
+    }
+
+    public void initRegisterNames_TableView2(){
+        registerNameColumn.setCellValueFactory(new PropertyValueFactory<>("registerName"));
+        offsetColumn.setCellValueFactory(new PropertyValueFactory<>("offsetValue"));
+
+
+        RegisterModel register=new RegisterModel("R_id","0x00");
+        RegisterModel register2=new RegisterModel("R_id2","0x02");
+        RegisterModel register3=new RegisterModel("R_ver","0x04");
+        RegisterModel register4=new RegisterModel("R_date","0x06");
+        RegisterModel register5=new RegisterModel("R_date2","0x08");
+        RegisterModel register6=new RegisterModel("R_D_VER","0x0a");
+        RegisterModel register7=new RegisterModel("R_BoardLayoutVersion","0x0c");
+        RegisterModel register8=new RegisterModel("R_STATUS_REG","0x0e");
+//        RegisterModel register9=new RegisterModel("ETC_sub_addr","0x10");
+//        RegisterModel register10=new RegisterModel("ETC_Cmd","0x12");
+//        RegisterModel register11=new RegisterModel("ETC_data_rd","0x14");
+//        RegisterModel register12=new RegisterModel("ETC_data_wr","0x16");
+//        RegisterModel register13=new RegisterModel("ETC_exe","0x18");
+//        RegisterModel register14=new RegisterModel("ETC_status","0x1a");
+        registerTable.getItems().clear();
+        registerTable.getItems().addAll(register,register2,register3,register4,register5,register6,register7,register8);
     }
 
     public void initRegisterNames_listView() {
@@ -805,9 +2041,27 @@ if(mode==2){
 
         //BLACK INA 219
         if(selectedRegister.getRegisterName().equals("Configuration")) {
+            writeToUartTerminal2("spi_util 0x80200000\n",1);
+            serialPort2.writeString("spi_util 0x80200000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80220001\n",1);
+            serialPort2.writeString("spi_util 0x80220001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80280001\n",1);
+            serialPort2.writeString("spi_util 0x80280001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x002a0000\n",1);
+            serialPort2.writeString("spi_util 0x002a0000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x00240000\n",1);
+            serialPort2.writeString("spi_util 0x00240000\n");
+            Thread.sleep(10);
+
+
+
 
             registerDescription.setText("All-register reset, settings for bus\n"+
-                   "voltage range, PGA Gain, ADC\n"+
+                    "voltage range, PGA Gain, ADC\n"+
                     "resolution/averaging.\n"+
                     "Default Value is :0x399F\n"+
                     "R/W");
@@ -815,32 +2069,102 @@ if(mode==2){
         }
 
         if(selectedRegister.getRegisterName().equals("Shunt voltage")) {
-
+            writeToUartTerminal2("spi_util 0x80200001\n",1);
+            serialPort2.writeString("spi_util 0x80200001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80220001\n",1);
+            serialPort2.writeString("spi_util 0x80220001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80280001\n",1);
+            serialPort2.writeString("spi_util 0x80280001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x002a0000\n",1);
+            serialPort2.writeString("spi_util 0x002a0000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x00240000\n",1);
+            serialPort2.writeString("spi_util 0x00240000\n");
+            Thread.sleep(10);
             registerDescription.setText("Shunt voltage measurement data.\n"+
                     "Read Only");
 
         }
         if(selectedRegister.getRegisterName().equals("Bus voltage")) {
-
+            writeToUartTerminal2("spi_util 0x80200002\n",1);
+            serialPort2.writeString("spi_util 0x80200002\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80220001\n",1);
+            serialPort2.writeString("spi_util 0x80220001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80280001\n",1);
+            serialPort2.writeString("spi_util 0x80280001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x002a0000\n",1);
+            serialPort2.writeString("spi_util 0x002a0000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x00240000\n",1);
+            serialPort2.writeString("spi_util 0x00240000\n");
+            Thread.sleep(10);
             registerDescription.setText("Bus voltage measurement data\n"+
                     "Read Only");
 
         }
         if(selectedRegister.getRegisterName().equals("Power")) {
-
+            writeToUartTerminal2("spi_util 0x80200003\n",1);
+            serialPort2.writeString("spi_util 0x80200003\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80220001\n",1);
+            serialPort2.writeString("spi_util 0x80220001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80280001\n",1);
+            serialPort2.writeString("spi_util 0x80280001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x002a0000\n",1);
+            serialPort2.writeString("spi_util 0x002a0000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x00240000\n",1);
+            serialPort2.writeString("spi_util 0x00240000\n");
+            Thread.sleep(10);
             registerDescription.setText("Power measurement data.\n"+
                     "Read Only");
         }
 
         if(selectedRegister.getRegisterName().equals("Current")) {
-
+            writeToUartTerminal2("spi_util 0x80200004\n",1);
+            serialPort2.writeString("spi_util 0x80200004\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80220001\n",1);
+            serialPort2.writeString("spi_util 0x80220001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80280001\n",1);
+            serialPort2.writeString("spi_util 0x80280001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x002a0000\n",1);
+            serialPort2.writeString("spi_util 0x002a0000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x00240000\n",1);
+            serialPort2.writeString("spi_util 0x00240000\n");
+            Thread.sleep(10);
             registerDescription.setText("Contains the value of the current flowing \n"+
                     "through the shunt resistor\n"+
                     "Read Only\n");
         }
 
         if(selectedRegister.getRegisterName().equals("Calibration")) {
-
+            writeToUartTerminal2("spi_util 0x80200005\n",1);
+            serialPort2.writeString("spi_util 0x80200005\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80220001\n",1);
+            serialPort2.writeString("spi_util 0x80220001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x80280001\n",1);
+            serialPort2.writeString("spi_util 0x80280001\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x002a0000\n",1);
+            serialPort2.writeString("spi_util 0x002a0000\n");
+            Thread.sleep(10);
+            writeToUartTerminal2("spi_util 0x00240000\n",1);
+            serialPort2.writeString("spi_util 0x00240000\n");
+            Thread.sleep(10);
             registerDescription.setText("Sets full-scale range and LSB of current\n"+
                     "and power measurements. Overall\n"+
                     "system calibration.\n\n"+
@@ -857,19 +2181,32 @@ if(mode==2){
         if(selectedRegister.getRegisterName().equals("Copper Control")) {
             moveToPhyPage(1,0);
             registerDescription.setText("Bit(15):Copper Reset\n"+
-                                        "Bit(14):Loopback\n"+
-                                        "Bit(13):Speed Select (LSB)\n"+
-                                        "Bit(12):Auto negotiation Enable\n"+
-                                        "Bit(11):Power Down\n"+
-                                        "Bit(10):Isolate\n"+
-                                        "Bit(9) :Restart Copper Auto negotiation\n"+
-                                        "Bit(8) :Copper Duplex Mode\n"+
-                                        "Bit(7) :Collision Test\n"+
-                                        "Bit(6):Speed Select (MSB)\n"+
-                                        "Bits(5:0):Reserved\n");
+                    "Bit(14):Loopback\n"+
+                    "Bit(13):Speed Select (LSB)\n"+
+                    "Bit(12):Auto negotiation Enable\n"+
+                    "Bit(11):Power Down\n"+
+                    "Bit(10):Isolate\n"+
+                    "Bit(9) :Restart Copper Auto negotiation\n"+
+                    "Bit(8) :Copper Duplex Mode\n"+
+                    "Bit(7) :Collision Test\n"+
+                    "Bit(6):Speed Select (MSB)\n"+
+                    "Bits(5:0):Reserved\n");
 
         }
 //BLACK PHY
+
+
+        //RED FPGA
+        if(selectedRegister.getRegisterName().equals("R_id")){
+            writeToUartTerminal("spi_util 0x00000000\n",1);
+            serialPort.writeString("spi_util 0x00000000\n");
+            userSentSomtingToUART=2;
+            registerDescription.setText("ID Register  [0x = ASCII \"IOGR\"]");
+        }
+
+        //RED FPGA
+
+
 
         if(selectedRegister.getRegisterName().equals("id")){
             writeToUartTerminal("spi_util 0x00000000\n",1);
@@ -924,7 +2261,7 @@ if(mode==2){
             serialPort.writeString("spi_util 0x000e0000\n");
             userSentSomtingToUART=2;
 
-  //          Thread.sleep(1000);
+            //          Thread.sleep(1000);
 //            bR.readLine();
 
 
@@ -964,46 +2301,65 @@ if(mode==2){
         }
     }
 
+    private class PortReader2 implements SerialPortEventListener {
+        private final Consumer<String> textHandler2;
 
-public void set10Mbps_btn_pressed() throws SerialPortException, InterruptedException {
-    //write sequence
-    writeToUartTerminal("spi_util 0x80400100\n",1);
-    serialPort.writeString("spi_util 0x80400100\n");
-    Thread.sleep(10);
-    writeToUartTerminal("spi_util 0x80420000\n",1);
-    serialPort.writeString("spi_util 0x80420000\n");
-    Thread.sleep(10);
-    writeToUartTerminal("spi_util 0x80468100\n",1);
-    serialPort.writeString("spi_util 0x80468100\n");
-    Thread.sleep(10);
-    writeToUartTerminal("spi_util 0x80480001\n",1);
-    serialPort.writeString("spi_util 0x80480001\n");
-    Thread.sleep(10);
-    writeToUartTerminal("spi_util 0x004a0000\n",1);
-    serialPort.writeString("spi_util 0x004a0000\n");
-    Thread.sleep(10);
-    writeToUartTerminal("spi_util 0x00440000\n",1);
-    serialPort.writeString("spi_util 0x00440000\n");
+        PortReader2(Consumer<String> textHandler2) {
+            this.textHandler2 = textHandler2;
+        }
 
-    Thread.sleep(10);
-    //read sequence
-    writeToUartTerminal("spi_util 0x80400100\n",1);
-    serialPort.writeString("spi_util 0x80400100\n");
-    Thread.sleep(10);
-    writeToUartTerminal("spi_util 0x80420001\n",1);
-    serialPort.writeString("spi_util 0x80420001\n");
-    Thread.sleep(10);
-    writeToUartTerminal("spi_util 0x80480001\n",1);
-    serialPort.writeString("spi_util 0x80480001\n");
-    Thread.sleep(10);
-    writeToUartTerminal("spi_util 0x004a0000\n",1);
-    serialPort.writeString("spi_util 0x004a0000\n");
-    Thread.sleep(10);
-    writeToUartTerminal("spi_util 0x00440000\n",1);
-    serialPort.writeString("spi_util 0x00440000\n");
+        @Override
+        public void serialEvent(SerialPortEvent event) {
+            if (event.isRXCHAR()) {
+                try {
+                    String buffer2 = serialPort2.readString();
+                    textHandler2.accept(buffer2);
+                } catch (SerialPortException ex) {
+                    System.out.println(ex);
+                }
+            }
+        }
+    }
+
+    public void set10Mbps_btn_pressed() throws SerialPortException, InterruptedException {
+        //write sequence
+        writeToUartTerminal("spi_util 0x80400100\n",1);
+        serialPort.writeString("spi_util 0x80400100\n");
+        Thread.sleep(10);
+        writeToUartTerminal("spi_util 0x80420000\n",1);
+        serialPort.writeString("spi_util 0x80420000\n");
+        Thread.sleep(10);
+        writeToUartTerminal("spi_util 0x80468100\n",1);
+        serialPort.writeString("spi_util 0x80468100\n");
+        Thread.sleep(10);
+        writeToUartTerminal("spi_util 0x80480001\n",1);
+        serialPort.writeString("spi_util 0x80480001\n");
+        Thread.sleep(10);
+        writeToUartTerminal("spi_util 0x004a0000\n",1);
+        serialPort.writeString("spi_util 0x004a0000\n");
+        Thread.sleep(10);
+        writeToUartTerminal("spi_util 0x00440000\n",1);
+        serialPort.writeString("spi_util 0x00440000\n");
+
+        Thread.sleep(10);
+        //read sequence
+        writeToUartTerminal("spi_util 0x80400100\n",1);
+        serialPort.writeString("spi_util 0x80400100\n");
+        Thread.sleep(10);
+        writeToUartTerminal("spi_util 0x80420001\n",1);
+        serialPort.writeString("spi_util 0x80420001\n");
+        Thread.sleep(10);
+        writeToUartTerminal("spi_util 0x80480001\n",1);
+        serialPort.writeString("spi_util 0x80480001\n");
+        Thread.sleep(10);
+        writeToUartTerminal("spi_util 0x004a0000\n",1);
+        serialPort.writeString("spi_util 0x004a0000\n");
+        Thread.sleep(10);
+        writeToUartTerminal("spi_util 0x00440000\n",1);
+        serialPort.writeString("spi_util 0x00440000\n");
 
 
-}
+    }
 
     public void set100Mbps_btn_pressed() throws SerialPortException, InterruptedException {
 //        spi_util 0x80400100 --  MDIO_Addr , write to phy adress 0 ,select register  22 dec = 16 hex (this is the page select register) - defult value 0000
@@ -1100,46 +2456,90 @@ public void set10Mbps_btn_pressed() throws SerialPortException, InterruptedExcep
     }
 
     public void writeToPhy_Btn_Pressed() throws InterruptedException, SerialPortException {
+        if(edspTAB.isSelected()) {
+            Thread.sleep(100);
+            //move to user wanted page:
+            if (phyPort.getText().equals("00") || phyPort.getText().equals("01")||phyPort.getText().equals("02")|| phyPort.getText().equals("03")) {
+                writeToUartTerminal("spi_util 0x8040" + phyPort.getText() + "16\n", 1);
+                serialPort.writeString("spi_util 0x8040" + phyPort.getText() + "16\n");
+                Thread.sleep(100);
+                writeToUartTerminal("spi_util 0x80420000\n", 1);
+                serialPort.writeString("spi_util 0x80420000\n");
+                Thread.sleep(100);
+                writeToUartTerminal("spi_util 0x8046000" + phyPage.getText() + "\n", 1);
+                serialPort.writeString("spi_util 0x8046000" + phyPage.getText() + "\n");
+                Thread.sleep(100);
+                writeToUartTerminal("spi_util 0x80480001\n", 1);
+                serialPort.writeString("spi_util 0x80480001\n");
+                Thread.sleep(100);
+                writeToUartTerminal("spi_util 0x004a0000\n", 1);
+                serialPort.writeString("spi_util 0x004a0000\n");
+                Thread.sleep(100);
+            }
 
-        Thread.sleep(100);
-        //move to user wanted page:
-        writeToUartTerminal("spi_util 0x80400"+phyPort.getText()+"16\n",1);
-        serialPort.writeString("spi_util 0x80400"+phyPort.getText()+"16\n");
-        Thread.sleep(100);
-        writeToUartTerminal("spi_util 0x80420000\n",1);
-        serialPort.writeString("spi_util 0x80420000\n");
-        Thread.sleep(100);
-        writeToUartTerminal("spi_util 0x8046000"+phyPage.getText()+ "\n",1);
-        serialPort.writeString("spi_util 0x8046000"+phyPage.getText()+ "\n");
-        Thread.sleep(100);
-        writeToUartTerminal("spi_util 0x80480001\n",1);
-        serialPort.writeString("spi_util 0x80480001\n");
-        Thread.sleep(100);
-        writeToUartTerminal("spi_util 0x004a0000\n",1);
-        serialPort.writeString("spi_util 0x004a0000\n");
-        Thread.sleep(100);
+            Thread.sleep(100);
+            //write to requested register requested data:
+            writeToUartTerminal("spi_util 0x8040" + phyPort.getText() + phyRegister.getText() + "\n", 1);
+            serialPort.writeString("spi_util 0x8040" + phyPort.getText() + phyRegister.getText() + "\n");
+            Thread.sleep(100);
+            writeToUartTerminal("spi_util 0x80420000\n", 1);
+            serialPort.writeString("spi_util 0x80420000\n");
+            Thread.sleep(100);
+            writeToUartTerminal("spi_util 0x8046" + hex3.getText() + hex2.getText() + hex1.getText() + hex0.getText() + "\n", 1);
+            serialPort.writeString("spi_util 0x8046" + hex3.getText() + hex2.getText() + hex1.getText() + hex0.getText() + "\n");
+            Thread.sleep(100);
 
 
+            writeToUartTerminal("spi_util 0x80480001\n", 1);
+            serialPort.writeString("spi_util 0x80480001\n");
+            Thread.sleep(100);
+            writeToUartTerminal("spi_util 0x004a0000\n", 1);
+            serialPort.writeString("spi_util 0x004a0000\n");
+            Thread.sleep(100);
+        }
+        else {
+            if (phyPort.getText().equals("00") || phyPort.getText().equals("01")||phyPort.getText().equals("02")|| phyPort.getText().equals("03")) {
+                Thread.sleep(100);
+                //move to user wanted page:
+                writeToUartTerminal2("spi_util 0x8040" + phyPort.getText() + "16\n", 1);
+                serialPort2.writeString("spi_util 0x8040" + phyPort.getText() + "16\n");
+                Thread.sleep(100);
+                writeToUartTerminal2("spi_util 0x80420000\n", 1);
+                serialPort2.writeString("spi_util 0x80420000\n");
+                Thread.sleep(100);
+                writeToUartTerminal2("spi_util 0x8046000" + phyPage.getText() + "\n", 1);
+                serialPort2.writeString("spi_util 0x8046000" + phyPage.getText() + "\n");
+                Thread.sleep(100);
+                writeToUartTerminal2("spi_util 0x80480001\n", 1);
+                serialPort2.writeString("spi_util 0x80480001\n");
+                Thread.sleep(100);
+                writeToUartTerminal2("spi_util 0x004a0000\n", 1);
+                serialPort2.writeString("spi_util 0x004a0000\n");
+                Thread.sleep(100);
+            }
 
-        Thread.sleep(100);
-        //write to requested register requested data:
-        writeToUartTerminal("spi_util 0x80400"+phyPort.getText()+phyRegister.getText()+"\n",1);
-        serialPort.writeString("spi_util 0x80400"+phyPort.getText()+phyRegister.getText()+"\n");
-        Thread.sleep(100);
-        writeToUartTerminal("spi_util 0x80420000\n",1);
-        serialPort.writeString("spi_util 0x80420000\n");
-        Thread.sleep(100);
-        writeToUartTerminal("spi_util 0x8046"+hex3.getText()+hex2.getText()+hex1.getText()+hex0.getText()+"\n",1);
-        serialPort.writeString("spi_util 0x8046"+hex3.getText()+hex2.getText()+hex1.getText()+hex0.getText()+"\n");
-        Thread.sleep(100);
+            Thread.sleep(100);
+            //write to requested register requested data:
+            writeToUartTerminal2("spi_util 0x8040" + phyPort.getText() + phyRegister.getText() + "\n", 1);
+            serialPort2.writeString("spi_util 0x8040" + phyPort.getText() + phyRegister.getText() + "\n");
+            Thread.sleep(100);
+            writeToUartTerminal2("spi_util 0x80420000\n", 1);
+            serialPort2.writeString("spi_util 0x80420000\n");
+            Thread.sleep(100);
+            writeToUartTerminal2("spi_util 0x8046" + hex3.getText() + hex2.getText() + hex1.getText() + hex0.getText() + "\n", 1);
+            serialPort2.writeString("spi_util 0x8046" + hex3.getText() + hex2.getText() + hex1.getText() + hex0.getText() + "\n");
+            Thread.sleep(100);
 
 
-        writeToUartTerminal("spi_util 0x80480001\n",1);
-        serialPort.writeString("spi_util 0x80480001\n");
-        Thread.sleep(100);
-        writeToUartTerminal("spi_util 0x004a0000\n",1);
-        serialPort.writeString("spi_util 0x004a0000\n");
-        Thread.sleep(100);
+            writeToUartTerminal2("spi_util 0x80480001\n", 1);
+            serialPort2.writeString("spi_util 0x80480001\n");
+            Thread.sleep(100);
+            writeToUartTerminal2("spi_util 0x004a0000\n", 1);
+            serialPort2.writeString("spi_util 0x004a0000\n");
+            Thread.sleep(100);
+        }
+
+
 
 
     }
@@ -1153,43 +2553,86 @@ public void set10Mbps_btn_pressed() throws SerialPortException, InterruptedExcep
 //        spi_util 0x80480001 -- start execute
 //        spi_util 0x004a0000 -- check done status is 1
 
+        if(edspTAB.isSelected()) {
+            Thread.sleep(100);
+            //move to user wanted page:
+            if (phyPort.getText().equals("00") || phyPort.getText().equals("01")||phyPort.getText().equals("02")|| phyPort.getText().equals("03")) {
+                writeToUartTerminal("spi_util 0x8040" + phyPort.getText() + "16\n", 1);
+                serialPort.writeString("spi_util 0x8040" + phyPort.getText() + "16\n");
+                Thread.sleep(100);
+                writeToUartTerminal("spi_util 0x80420000\n", 1);
+                serialPort.writeString("spi_util 0x80420000\n");
+                Thread.sleep(100);
+                writeToUartTerminal("spi_util 0x8046000" + phyPage.getText() + "\n", 1);
+                serialPort.writeString("spi_util 0x8046000" + phyPage.getText() + "\n");
+                Thread.sleep(100);
+                writeToUartTerminal("spi_util 0x80480001\n", 1);
+                serialPort.writeString("spi_util 0x80480001\n");
+                Thread.sleep(100);
+                writeToUartTerminal("spi_util 0x004a0000\n", 1);
+                serialPort.writeString("spi_util 0x004a0000\n");
+                Thread.sleep(100);
+            }
 
-        Thread.sleep(100);
-        //move to user wanted page:
-        writeToUartTerminal("spi_util 0x80400"+phyPort.getText()+"16\n",1);
-        serialPort.writeString("spi_util 0x80400"+phyPort.getText()+"16\n");
-        Thread.sleep(100);
-        writeToUartTerminal("spi_util 0x80420000\n",1);
-        serialPort.writeString("spi_util 0x80420000\n");
-        Thread.sleep(100);
-        writeToUartTerminal("spi_util 0x8046000"+phyPage.getText()+ "\n",1);
-        serialPort.writeString("spi_util 0x8046000"+phyPage.getText()+ "\n");
-        Thread.sleep(100);
-        writeToUartTerminal("spi_util 0x80480001\n",1);
-        serialPort.writeString("spi_util 0x80480001\n");
-        Thread.sleep(100);
-        writeToUartTerminal("spi_util 0x004a0000\n",1);
-        serialPort.writeString("spi_util 0x004a0000\n");
-        Thread.sleep(100);
+            //read user wanted register
+            writeToUartTerminal("spi_util 0x8040" + phyPort.getText() + "" + phyRegister.getText() + "\n", 1);
+            serialPort.writeString("spi_util 0x8040" + phyPort.getText() + "" + phyRegister.getText() + "\n");
+            Thread.sleep(100);
+            writeToUartTerminal("spi_util 0x80420001\n", 1);
+            serialPort.writeString("spi_util 0x80420001\n");
+            Thread.sleep(100);
+            writeToUartTerminal("spi_util 0x80480001\n", 1);
+            serialPort.writeString("spi_util 0x80480001\n");
+            Thread.sleep(100);
+            writeToUartTerminal("spi_util 0x004a0000\n", 1);
+            serialPort.writeString("spi_util 0x004a0000\n");
+            Thread.sleep(100);
+            writeToUartTerminal("spi_util 0x00440000\n", 1);
+            serialPort.writeString("spi_util 0x00440000\n");
+            Thread.sleep(100);
+            phyindexInteger = 1;
+        }
+        else
+        {
+            if (phyPort.getText().equals("00") || phyPort.getText().equals("01")||phyPort.getText().equals("02")|| phyPort.getText().equals("03")) {
+                Thread.sleep(100);
+                //move to user wanted page:
+                writeToUartTerminal2("spi_util 0x8040" + phyPort.getText() + "16\n", 1);
+                serialPort2.writeString("spi_util 0x8040" + phyPort.getText() + "16\n");
+                Thread.sleep(100);
+                writeToUartTerminal2("spi_util 0x80420000\n", 1);
+                serialPort2.writeString("spi_util 0x80420000\n");
+                Thread.sleep(100);
+                writeToUartTerminal2("spi_util 0x8046000" + phyPage.getText() + "\n", 1);
+                serialPort2.writeString("spi_util 0x8046000" + phyPage.getText() + "\n");
+                Thread.sleep(100);
+                writeToUartTerminal2("spi_util 0x80480001\n", 1);
+                serialPort2.writeString("spi_util 0x80480001\n");
+                Thread.sleep(100);
+                writeToUartTerminal2("spi_util 0x004a0000\n", 1);
+                serialPort2.writeString("spi_util 0x004a0000\n");
+                Thread.sleep(100);
+            }
 
+            //read user wanted register
+            writeToUartTerminal2("spi_util 0x8040" + phyPort.getText() + "" + phyRegister.getText() + "\n", 1);
+            serialPort2.writeString("spi_util 0x8040" + phyPort.getText() + "" + phyRegister.getText() + "\n");
+            Thread.sleep(100);
+            writeToUartTerminal2("spi_util 0x80420001\n", 1);
+            serialPort2.writeString("spi_util 0x80420001\n");
+            Thread.sleep(100);
+            writeToUartTerminal2("spi_util 0x80480001\n", 1);
+            serialPort2.writeString("spi_util 0x80480001\n");
+            Thread.sleep(100);
+            writeToUartTerminal2("spi_util 0x004a0000\n", 1);
+            serialPort2.writeString("spi_util 0x004a0000\n");
+            Thread.sleep(100);
+            writeToUartTerminal2("spi_util 0x00440000\n", 1);
+            serialPort2.writeString("spi_util 0x00440000\n");
+            Thread.sleep(100);
+            phyindexInteger = 1;
+        }
 
-        //read user wanted register
-        writeToUartTerminal("spi_util 0x80400"+phyPort.getText()+""+phyRegister.getText()+"\n",1);
-        serialPort.writeString("spi_util 0x80400"+phyPort.getText()+""+phyRegister.getText()+"\n");
-        Thread.sleep(100);
-        writeToUartTerminal("spi_util 0x80420001\n",1);
-        serialPort.writeString("spi_util 0x80420001\n");
-        Thread.sleep(100);
-        writeToUartTerminal("spi_util 0x80480001\n",1);
-        serialPort.writeString("spi_util 0x80480001\n");
-        Thread.sleep(100);
-        writeToUartTerminal("spi_util 0x004a0000\n",1);
-        serialPort.writeString("spi_util 0x004a0000\n");
-        Thread.sleep(100);
-        writeToUartTerminal("spi_util 0x00440000\n",1);
-        serialPort.writeString("spi_util 0x00440000\n");
-        Thread.sleep(100);
-        phyindexInteger=1;
     }
 
     public void choiceBoxPressed(){
@@ -1222,7 +2665,7 @@ public void set10Mbps_btn_pressed() throws SerialPortException, InterruptedExcep
     }
 
 
-   public void writeToSensorBtn_Pressed(){
+    public void writeToSensorBtn_Pressed(){
 
     }
 
